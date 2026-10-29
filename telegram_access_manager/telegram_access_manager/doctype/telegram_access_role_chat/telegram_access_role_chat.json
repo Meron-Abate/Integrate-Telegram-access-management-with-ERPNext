@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "telegram_chat",
+  "chat_type",
+  "community",
+  "chat_active"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "telegram_chat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Telegram Chat",
+   "options": "Telegram Chat",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "telegram_chat.chat_type",
+   "fieldname": "chat_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Chat Type",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "telegram_chat.community",
+   "fieldname": "community",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Community",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "telegram_chat.is_active",
+   "fieldname": "chat_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Chat Active",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-28 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Access Role Chat",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

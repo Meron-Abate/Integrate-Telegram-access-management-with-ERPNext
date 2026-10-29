@@ -1,0 +1,8 @@
+{
+  "name": "telegram_access_manager",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && yarn install --frozen-lockfile && yarn build",
+    "dev": "cd frontend && yarn dev"
+  }
+}

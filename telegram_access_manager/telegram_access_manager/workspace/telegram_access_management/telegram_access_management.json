@@ -1,0 +1,113 @@
+{
+ "app": "telegram_access_manager",
+ "charts": [],
+ "content": "[{\"id\":\"tamh000000\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Daily Work</b></span>\",\"col\":12}},{\"id\":\"tams000000\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Requests\",\"col\":4}},{\"id\":\"tams000001\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Approved Employees\",\"col\":4}},{\"id\":\"tams000002\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chats to Review\",\"col\":4}},{\"id\":\"tamh000001\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Setup</b></span>\",\"col\":12}},{\"id\":\"tams100000\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Groups & Channels\",\"col\":4}},{\"id\":\"tams100001\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Access Roles\",\"col\":4}},{\"id\":\"tams100002\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Communities\",\"col\":4}},{\"id\":\"tamh000002\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Monitoring</b></span>\",\"col\":12}},{\"id\":\"tams200000\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Audit Log\",\"col\":4}},{\"id\":\"tams200001\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Bot Updates\",\"col\":4}},{\"id\":\"tams200002\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Settings\",\"col\":4}}]",
+ "creation": "2026-10-28 12:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "users",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Telegram Access Management",
+ "links": [],
+ "modified": "2026-10-28 15:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Access Management",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "Telegram Access Manager"
+  },
+  {
+   "role": "Telegram Access Verifier"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 50.0,
+ "shortcuts": [
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "format": "{} Pending",
+   "label": "Pending Requests",
+   "link_to": "Telegram Access Request",
+   "stats_filter": "{\"status\": [\"in\", [\"Pending Verification\", \"Pending Approval\", \"Error\"]]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "format": "{} Active",
+   "label": "Approved Employees",
+   "link_to": "Employee Telegram Access",
+   "stats_filter": "{\"is_active\": 1}",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "format": "{} to Review",
+   "label": "Chats to Review",
+   "link_to": "Telegram Chat",
+   "stats_filter": "{\"is_active\": 0, \"registration_status\": [\"in\", [\"Pending Review\", \"Discovered\"]]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Groups & Channels",
+   "link_to": "Telegram Chat",
+   "type": "DocType"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "List",
+   "label": "Access Roles",
+   "link_to": "Telegram Access Role",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Communities",
+   "link_to": "Telegram Community",
+   "type": "DocType"
+  },
+  {
+   "color": "Red",
+   "doc_view": "List",
+   "format": "{} Failed",
+   "label": "Audit Log",
+   "link_to": "Telegram Access Audit Log",
+   "stats_filter": "{\"result\": \"Failed\"}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Bot Updates",
+   "link_to": "Telegram Bot Update",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Settings",
+   "link_to": "Telegram Access Settings",
+   "type": "DocType"
+  }
+ ],
+ "title": "Telegram Access Management",
+ "type": "Workspace"
+}

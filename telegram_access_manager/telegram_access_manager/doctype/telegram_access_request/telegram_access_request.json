@@ -1,0 +1,299 @@
+{
+ "actions": [],
+ "autoname": "format:TAR-{YYYY}-{#####}",
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "status",
+  "request_timestamp",
+  "column_break_top",
+  "request_source",
+  "employee_telegram_access",
+  "identity_section",
+  "telegram_user_id",
+  "telegram_username",
+  "column_break_id",
+  "telegram_display_name",
+  "telegram_language",
+  "employee_section",
+  "employee",
+  "employee_name",
+  "employee_status",
+  "company",
+  "column_break_ver",
+  "verification_status",
+  "verification_method",
+  "verified_by",
+  "verified_on",
+  "verification_notes",
+  "access_section",
+  "access_role",
+  "chat_permissions",
+  "effective_preview",
+  "decision_section",
+  "admin_notes",
+  "column_break_dec",
+  "decided_by",
+  "decision_on",
+  "notification_status",
+  "error_details"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "default": "Pending Verification",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Pending Verification\nPending Approval\nApproved\nRejected\nCancelled\nError",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Requested On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_top",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Telegram Bot",
+   "fieldname": "request_source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "Telegram Bot\nManual",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_telegram_access",
+   "fieldtype": "Link",
+   "label": "Employee Telegram Access",
+   "options": "Employee Telegram Access",
+   "read_only": 1
+  },
+  {
+   "description": "Captured by the bot from Telegram. A username is not proof of identity.",
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Telegram Identity"
+  },
+  {
+   "fieldname": "telegram_user_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Telegram User ID",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "telegram_username",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Telegram Username",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_id",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "telegram_display_name",
+   "fieldtype": "Data",
+   "label": "Telegram Display Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "telegram_language",
+   "fieldtype": "Data",
+   "label": "Telegram Language",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Match & Verification"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.status",
+   "fieldname": "employee_status",
+   "fieldtype": "Data",
+   "label": "Employee Status",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.company",
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "label": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ver",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Not Verified",
+   "fieldname": "verification_status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Verification Status",
+   "options": "Not Verified\nVerified\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_method",
+   "fieldtype": "Data",
+   "label": "Verification Method",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verified_by",
+   "fieldtype": "Link",
+   "label": "Verified By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verified_on",
+   "fieldtype": "Datetime",
+   "label": "Verified On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_notes",
+   "fieldtype": "Small Text",
+   "label": "Verification Notes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "access_section",
+   "fieldtype": "Section Break",
+   "label": "Requested / Approved Access"
+  },
+  {
+   "fieldname": "access_role",
+   "fieldtype": "Link",
+   "label": "Telegram Access Role",
+   "options": "Telegram Access Role"
+  },
+  {
+   "description": "Role chats are added automatically. Set Override = Deny to exclude a role chat, or add a chat with Override = Allow to grant it individually.",
+   "fieldname": "chat_permissions",
+   "fieldtype": "Table",
+   "label": "Chat Permissions",
+   "options": "Telegram Access Request Chat"
+  },
+  {
+   "fieldname": "effective_preview",
+   "fieldtype": "HTML",
+   "label": "Effective Permissions Preview"
+  },
+  {
+   "fieldname": "decision_section",
+   "fieldtype": "Section Break",
+   "label": "Decision"
+  },
+  {
+   "fieldname": "admin_notes",
+   "fieldtype": "Small Text",
+   "label": "Administrator Notes"
+  },
+  {
+   "fieldname": "column_break_dec",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "decided_by",
+   "fieldtype": "Link",
+   "label": "Decided By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "decision_on",
+   "fieldtype": "Datetime",
+   "label": "Decision On",
+   "read_only": 1
+  },
+  {
+   "default": "Not Sent",
+   "fieldname": "notification_status",
+   "fieldtype": "Select",
+   "label": "Employee Notification",
+   "options": "Not Sent\nSent\nFailed\nNot Required",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_details",
+   "fieldtype": "Small Text",
+   "label": "Error Details",
+   "read_only": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-10-28 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Access Request",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Verifier",
+   "write": 1
+  }
+ ],
+ "search_fields": "telegram_username,telegram_user_id,employee,employee_name",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "telegram_display_name",
+ "track_changes": 1
+}

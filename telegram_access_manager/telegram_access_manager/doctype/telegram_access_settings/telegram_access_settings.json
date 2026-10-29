@@ -1,0 +1,360 @@
+{
+ "actions": [],
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "credentials_section",
+  "bot_token",
+  "column_break_cred",
+  "webhook_secret",
+  "integration_section",
+  "enabled",
+  "update_mode",
+  "public_base_url",
+  "column_break_int",
+  "status_html",
+  "bot_username",
+  "bot_id",
+  "webhook_status",
+  "last_checked_on",
+  "registration_section",
+  "default_telegram_community",
+  "column_break_reg",
+  "auto_register_discovered_chats",
+  "bot_section",
+  "privacy_notice",
+  "support_contact",
+  "invite_section",
+  "invite_link_expiry_hours",
+  "decline_unauthorized_join_requests",
+  "column_break_inv",
+  "remove_unauthorized_joins",
+  "revocation_section",
+  "remove_member_on_revoke",
+  "ban_on_removal",
+  "column_break_rev",
+  "auto_apply_role_changes",
+  "auto_revoke_on_employee_exit",
+  "require_separate_verifier",
+  "notification_section",
+  "notify_on_approval",
+  "notify_on_rejection",
+  "column_break_not",
+  "notify_on_revocation",
+  "limits_section",
+  "max_sync_attempts",
+  "retry_base_minutes",
+  "retry_max_minutes",
+  "column_break_lim",
+  "max_requests_per_user_per_day",
+  "max_messages_per_minute",
+  "bot_update_retention_days"
+ ],
+ "fields": [
+  {
+   "description": "Stored encrypted; only ***** is ever shown. Leave a field unchanged to keep the current value. A TELEGRAM_BOT_TOKEN / TELEGRAM_WEBHOOK_SECRET environment variable on the server, if set, takes precedence.",
+   "fieldname": "credentials_section",
+   "fieldtype": "Section Break",
+   "label": "Bot Credentials"
+  },
+  {
+   "description": "From @BotFather (format 123456789:ABC...). Changing it switches the app to that bot.",
+   "fieldname": "bot_token",
+   "fieldtype": "Password",
+   "label": "Bot Token",
+   "length": 255
+  },
+  {
+   "fieldname": "column_break_cred",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Only needed for Webhook mode. Use Telegram \u2192 Generate Webhook Secret, then Set Webhook.",
+   "fieldname": "webhook_secret",
+   "fieldtype": "Password",
+   "label": "Webhook Secret",
+   "length": 255
+  },
+  {
+   "fieldname": "integration_section",
+   "fieldtype": "Section Break",
+   "label": "Integration"
+  },
+  {
+   "default": "0",
+   "description": "Process incoming Telegram updates. Keep disabled until the bot token and webhook secret are configured on the server.",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "default": "Webhook",
+   "description": "Webhook for production. Polling (bench telegram-poll) only for local development; never run both.",
+   "fieldname": "update_mode",
+   "fieldtype": "Select",
+   "label": "Update Mode",
+   "options": "Webhook\nPolling"
+  },
+  {
+   "description": "HTTPS base URL Telegram should call, e.g. https://erp.example.com",
+   "fieldname": "public_base_url",
+   "fieldtype": "Data",
+   "label": "Public Base URL",
+   "options": "URL"
+  },
+  {
+   "fieldname": "column_break_int",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status_html",
+   "fieldtype": "HTML",
+   "label": "Configuration Status"
+  },
+  {
+   "fieldname": "bot_username",
+   "fieldtype": "Data",
+   "label": "Bot Username",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bot_id",
+   "fieldtype": "Data",
+   "label": "Bot User ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "webhook_status",
+   "fieldtype": "Small Text",
+   "label": "Last Webhook Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_checked_on",
+   "fieldtype": "Datetime",
+   "label": "Last Checked On",
+   "read_only": 1
+  },
+  {
+   "description": "Chat administrators register groups with /register. Registered chats stay inactive until activated here in ERPNext.",
+   "fieldname": "registration_section",
+   "fieldtype": "Section Break",
+   "label": "Chat Registration"
+  },
+  {
+   "description": "Community to which newly registered Telegram groups and channels will be assigned.",
+   "fieldname": "default_telegram_community",
+   "fieldtype": "Link",
+   "label": "Default Telegram Community",
+   "options": "Telegram Community"
+  },
+  {
+   "fieldname": "column_break_reg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "description": "Creates an inactive Telegram Chat record when the bot is added to a chat, so an administrator can review and activate it.",
+   "fieldname": "auto_register_discovered_chats",
+   "fieldtype": "Check",
+   "label": "Record Chats When the Bot Is Added"
+  },
+  {
+   "fieldname": "bot_section",
+   "fieldtype": "Section Break",
+   "label": "Bot Messages"
+  },
+  {
+   "default": "This bot manages access to company Telegram groups and channels. If you request access, we record your Telegram user ID, username, display name and the time of the request so HR can verify your identity and grant access. We will never ask for passwords, login codes or other sensitive data.",
+   "description": "Shown on /start. The bot never asks for passwords or login codes.",
+   "fieldname": "privacy_notice",
+   "fieldtype": "Small Text",
+   "label": "Privacy Notice"
+  },
+  {
+   "default": "Please contact HR if you need help.",
+   "fieldname": "support_contact",
+   "fieldtype": "Data",
+   "label": "Support Contact Text"
+  },
+  {
+   "fieldname": "invite_section",
+   "fieldtype": "Section Break",
+   "label": "Invitations & Join Requests"
+  },
+  {
+   "default": "24",
+   "fieldname": "invite_link_expiry_hours",
+   "fieldtype": "Int",
+   "label": "Invite Link Expiry (Hours)",
+   "non_negative": 1
+  },
+  {
+   "default": "1",
+   "description": "Join requests in managed chats from users without an explicit Allow are declined.",
+   "fieldname": "decline_unauthorized_join_requests",
+   "fieldtype": "Check",
+   "label": "Decline Unauthorized Join Requests"
+  },
+  {
+   "fieldname": "column_break_inv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "description": "If someone other than the intended employee joins through a link created by this app, remove them (requires ban rights).",
+   "fieldname": "remove_unauthorized_joins",
+   "fieldtype": "Check",
+   "label": "Remove Unauthorized Users Joining Through Managed Links"
+  },
+  {
+   "fieldname": "revocation_section",
+   "fieldtype": "Section Break",
+   "label": "Revocation & Changes"
+  },
+  {
+   "default": "1",
+   "fieldname": "remove_member_on_revoke",
+   "fieldtype": "Check",
+   "label": "Remove Member When Access Is Revoked"
+  },
+  {
+   "default": "0",
+   "description": "If unchecked, removed users are unbanned immediately (kick) so they can be re-invited later. Join-request gating still blocks unauthorized rejoining.",
+   "fieldname": "ban_on_removal",
+   "fieldtype": "Check",
+   "label": "Keep Removed Users Banned"
+  },
+  {
+   "fieldname": "column_break_rev",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "If unchecked, role/chat changes are recalculated and marked 'Changes Pending' until an administrator applies them.",
+   "fieldname": "auto_apply_role_changes",
+   "fieldtype": "Check",
+   "label": "Automatically Apply Role Changes to Telegram"
+  },
+  {
+   "default": "0",
+   "description": "If unchecked, the access record is flagged for review and an administrator revokes it.",
+   "fieldname": "auto_revoke_on_employee_exit",
+   "fieldtype": "Check",
+   "label": "Automatically Revoke When Employee Leaves"
+  },
+  {
+   "default": "0",
+   "fieldname": "require_separate_verifier",
+   "fieldtype": "Check",
+   "label": "Require Different Users to Verify and Approve"
+  },
+  {
+   "fieldname": "notification_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Notifications"
+  },
+  {
+   "default": "1",
+   "fieldname": "notify_on_approval",
+   "fieldtype": "Check",
+   "label": "Notify on Approval"
+  },
+  {
+   "default": "1",
+   "fieldname": "notify_on_rejection",
+   "fieldtype": "Check",
+   "label": "Notify on Rejection"
+  },
+  {
+   "fieldname": "column_break_not",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "notify_on_revocation",
+   "fieldtype": "Check",
+   "label": "Notify on Revocation"
+  },
+  {
+   "fieldname": "limits_section",
+   "fieldtype": "Section Break",
+   "label": "Retries & Abuse Protection"
+  },
+  {
+   "default": "5",
+   "fieldname": "max_sync_attempts",
+   "fieldtype": "Int",
+   "label": "Max Automatic Sync Attempts",
+   "non_negative": 1
+  },
+  {
+   "default": "2",
+   "fieldname": "retry_base_minutes",
+   "fieldtype": "Int",
+   "label": "Retry Base Delay (Minutes)",
+   "non_negative": 1
+  },
+  {
+   "default": "60",
+   "fieldname": "retry_max_minutes",
+   "fieldtype": "Int",
+   "label": "Retry Max Delay (Minutes)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_lim",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "3",
+   "fieldname": "max_requests_per_user_per_day",
+   "fieldtype": "Int",
+   "label": "Max Access Requests per Telegram User per Day",
+   "non_negative": 1
+  },
+  {
+   "default": "20",
+   "fieldname": "max_messages_per_minute",
+   "fieldtype": "Int",
+   "label": "Max Bot Messages per User per Minute",
+   "non_negative": 1
+  },
+  {
+   "default": "30",
+   "fieldname": "bot_update_retention_days",
+   "fieldtype": "Int",
+   "label": "Keep Bot Update Records (Days)",
+   "non_negative": 1
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-29 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Access Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Telegram Access Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

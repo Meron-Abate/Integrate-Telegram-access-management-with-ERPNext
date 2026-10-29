@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "telegram_chat",
+  "source",
+  "override",
+  "effective_permission",
+  "note"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "telegram_chat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Telegram Chat",
+   "options": "Telegram Chat",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "default": "Individual",
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Source",
+   "options": "Role\nIndividual\nNone",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "default": "Inherit",
+   "fieldname": "override",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Override",
+   "options": "Inherit\nAllow\nDeny"
+  },
+  {
+   "columns": 1,
+   "fieldname": "effective_permission",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Effective",
+   "options": "Allow\nDeny",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "note",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Note",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-28 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Access Request Chat",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

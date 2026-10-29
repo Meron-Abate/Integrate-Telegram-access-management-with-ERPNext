@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "autoname": "field:community_name",
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "community_name",
+  "is_active",
+  "column_break_1",
+  "community_link",
+  "telegram_identifier",
+  "details_section",
+  "description",
+  "status_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "community_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Community Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Informational only. It is never sent to employees, because a community/folder link would bypass per-chat permissions.",
+   "fieldname": "community_link",
+   "fieldtype": "Data",
+   "label": "Telegram Community Link"
+  },
+  {
+   "description": "Optional reference (e.g. the community's announcement chat ID). Not used as a chat ID for any group or channel.",
+   "fieldname": "telegram_identifier",
+   "fieldtype": "Data",
+   "label": "Telegram Community Identifier"
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Internal Description"
+  },
+  {
+   "fieldname": "status_notes",
+   "fieldtype": "Small Text",
+   "label": "Configuration / Status Notes"
+  }
+ ],
+ "links": [
+  {
+   "group": "Chats",
+   "link_doctype": "Telegram Chat",
+   "link_fieldname": "community"
+  }
+ ],
+ "modified": "2026-10-28 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Community",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Verifier"
+  }
+ ],
+ "search_fields": "description",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

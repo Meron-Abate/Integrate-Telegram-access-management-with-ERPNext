@@ -1,0 +1,30 @@
+{
+ "app": "telegram_access_manager",
+ "creation": "2026-10-28 12:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 1,
+ "icon": "users",
+ "icon_type": "Link",
+ "idx": 0,
+ "label": "Telegram Access Management",
+ "link_to": "Telegram Access Management",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-10-29 16:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "Telegram Access Management",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [
+  {
+   "role": "Telegram Access Manager"
+  },
+  {
+   "role": "Telegram Access Verifier"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "standard": 1
+}

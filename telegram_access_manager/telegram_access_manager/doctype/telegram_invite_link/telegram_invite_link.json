@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "telegram_chat",
+  "employee_telegram_access",
+  "employee",
+  "telegram_user_id",
+  "column_break_1",
+  "status",
+  "link_type",
+  "link_name",
+  "expire_on",
+  "revoked_on",
+  "secret_section",
+  "invite_link"
+ ],
+ "fields": [
+  {
+   "fieldname": "telegram_chat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Telegram Chat",
+   "options": "Telegram Chat",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_telegram_access",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Employee Telegram Access",
+   "options": "Employee Telegram Access",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "telegram_user_id",
+   "fieldtype": "Data",
+   "label": "Telegram User ID"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active\nUsed\nRevoked\nExpired"
+  },
+  {
+   "fieldname": "link_type",
+   "fieldtype": "Select",
+   "label": "Link Type",
+   "options": "Join Request\nSingle-Use Invite Link"
+  },
+  {
+   "fieldname": "link_name",
+   "fieldtype": "Data",
+   "label": "Link Name"
+  },
+  {
+   "fieldname": "expire_on",
+   "fieldtype": "Datetime",
+   "label": "Expires On"
+  },
+  {
+   "fieldname": "revoked_on",
+   "fieldtype": "Datetime",
+   "label": "Revoked On"
+  },
+  {
+   "fieldname": "secret_section",
+   "fieldtype": "Section Break",
+   "label": "Link"
+  },
+  {
+   "description": "Encrypted at rest. Only sent to the employee in a private Telegram message.",
+   "fieldname": "invite_link",
+   "fieldtype": "Password",
+   "label": "Invite Link",
+   "length": 255
+  }
+ ],
+ "in_create": 1,
+ "links": [],
+ "modified": "2026-10-28 15:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Invite Link",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Manager"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

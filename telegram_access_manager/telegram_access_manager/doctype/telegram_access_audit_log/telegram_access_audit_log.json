@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "event_type",
+  "result",
+  "actor",
+  "column_break_1",
+  "employee",
+  "employee_telegram_access",
+  "access_request",
+  "telegram_chat",
+  "telegram_user_id",
+  "details_section",
+  "details"
+ ],
+ "fields": [
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Event",
+   "options": "Request Created\nRequest Updated\nIdentity Verified\nRequest Approved\nRequest Rejected\nRequest Cancelled\nRequest Error\nAccess Created\nAccess Updated\nAccess Revoked\nAccess Restored\nPermissions Recalculated\nInvite Link Created\nInvite Link Revoked\nJoin Request Approved\nJoin Request Declined\nMember Joined\nMember Left\nMember Removed\nUnauthorized Member\nSync Completed\nSync Failed\nManual Action Required\nNotification Sent\nNotification Failed\nChat Validated\nChat Discovered\nChat Registration Rejected\nChat Registration Refused\nChat Registered\nChat Migrated\nRole Updated\nEmployee Status Changed\nIdentity Updated\nIntegration Configured",
+   "reqd": 1
+  },
+  {
+   "default": "Info",
+   "fieldname": "result",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Result",
+   "options": "Success\nFailed\nInfo"
+  },
+  {
+   "fieldname": "actor",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Actor",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "employee_telegram_access",
+   "fieldtype": "Link",
+   "label": "Employee Telegram Access",
+   "options": "Employee Telegram Access"
+  },
+  {
+   "fieldname": "access_request",
+   "fieldtype": "Link",
+   "label": "Access Request",
+   "options": "Telegram Access Request"
+  },
+  {
+   "fieldname": "telegram_chat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Telegram Chat",
+   "options": "Telegram Chat"
+  },
+  {
+   "fieldname": "telegram_user_id",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Telegram User ID"
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Details"
+  }
+ ],
+ "in_create": 1,
+ "links": [],
+ "modified": "2026-10-28 15:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Access Audit Log",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Verifier"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

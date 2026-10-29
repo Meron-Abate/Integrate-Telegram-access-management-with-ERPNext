@@ -1,0 +1,113 @@
+{
+ "actions": [],
+ "autoname": "field:role_name",
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "role_name",
+  "is_active",
+  "description",
+  "chats_section",
+  "chats",
+  "employees_section",
+  "pending_changes_html"
+ ],
+ "fields": [
+  {
+   "fieldname": "role_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Role Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "description": "A Telegram Access Role is a bundle of Telegram chats. It is unrelated to ERPNext user roles.",
+   "fieldname": "chats_section",
+   "fieldtype": "Section Break",
+   "label": "Allowed Chats"
+  },
+  {
+   "fieldname": "chats",
+   "fieldtype": "Table",
+   "label": "Allowed Chats",
+   "options": "Telegram Access Role Chat"
+  },
+  {
+   "fieldname": "employees_section",
+   "fieldtype": "Section Break",
+   "label": "Affected Employees"
+  },
+  {
+   "fieldname": "pending_changes_html",
+   "fieldtype": "HTML",
+   "label": "Pending Changes"
+  }
+ ],
+ "links": [
+  {
+   "group": "Employees",
+   "link_doctype": "Employee Telegram Access",
+   "link_fieldname": "access_role"
+  },
+  {
+   "group": "Requests",
+   "link_doctype": "Telegram Access Request",
+   "link_fieldname": "access_role"
+  }
+ ],
+ "modified": "2026-10-28 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Access Role",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Verifier"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

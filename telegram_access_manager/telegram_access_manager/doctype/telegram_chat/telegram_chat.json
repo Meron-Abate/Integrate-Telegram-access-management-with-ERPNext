@@ -1,0 +1,271 @@
+{
+ "actions": [],
+ "autoname": "field:chat_name",
+ "creation": "2026-10-28 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "chat_name",
+  "telegram_chat_id",
+  "chat_type",
+  "community",
+  "column_break_1",
+  "is_active",
+  "registration_status",
+  "access_method",
+  "description",
+  "bot_section",
+  "telegram_title",
+  "bot_status",
+  "bot_can_invite_users",
+  "bot_can_restrict_members",
+  "column_break_2",
+  "invite_link_status",
+  "last_validated_on",
+  "last_sync_on",
+  "last_error",
+  "registration_details_section",
+  "registration_source",
+  "registered_on",
+  "registration_notes",
+  "column_break_reg",
+  "registered_by_telegram_user_id",
+  "registered_by_name",
+  "telegram_username",
+  "is_forum"
+ ],
+ "fields": [
+  {
+   "fieldname": "chat_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Internal Chat Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "description": "Numeric ID, e.g. -1001234567890 for supergroups/channels. Stored as text to keep the sign and full precision.",
+   "fieldname": "telegram_chat_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Telegram Chat ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "Supergroup",
+   "fieldname": "chat_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Chat Type",
+   "options": "Supergroup\nGroup\nChannel",
+   "reqd": 1
+  },
+  {
+   "fieldname": "community",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Community",
+   "options": "Telegram Community"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "Only active chats can be granted. Activate after validating bot access.",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active"
+  },
+  {
+   "default": "Registered",
+   "fieldname": "registration_status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Registration Status",
+   "options": "Registered\nPending Review\nDiscovered\nRejected",
+   "read_only": 1
+  },
+  {
+   "default": "Join Request",
+   "description": "Join Request (recommended): each employee gets a personal link; the bot approves the request only if ERPNext allows it. Single-Use: a one-person link (required for basic groups).",
+   "fieldname": "access_method",
+   "fieldtype": "Select",
+   "label": "Access Method",
+   "options": "Join Request\nSingle-Use Invite Link",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "bot_section",
+   "fieldtype": "Section Break",
+   "label": "Bot Access (from Telegram)"
+  },
+  {
+   "fieldname": "telegram_title",
+   "fieldtype": "Data",
+   "label": "Title in Telegram",
+   "read_only": 1
+  },
+  {
+   "default": "Unknown",
+   "fieldname": "bot_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Bot Status",
+   "options": "Unknown\nAdministrator\nMember\nNot a Member\nError",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bot_can_invite_users",
+   "fieldtype": "Check",
+   "label": "Bot Can Invite Users",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bot_can_restrict_members",
+   "fieldtype": "Check",
+   "label": "Bot Can Ban/Remove Members",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Unknown",
+   "fieldname": "invite_link_status",
+   "fieldtype": "Select",
+   "label": "Invite-Link Management",
+   "options": "Unknown\nAvailable\nUnavailable",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_validated_on",
+   "fieldtype": "Datetime",
+   "label": "Last Validated On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_sync_on",
+   "fieldtype": "Datetime",
+   "label": "Last Synchronized On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_error",
+   "fieldtype": "Small Text",
+   "label": "Last Error",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "registration_details_section",
+   "fieldtype": "Section Break",
+   "label": "Registration"
+  },
+  {
+   "default": "Manual",
+   "fieldname": "registration_source",
+   "fieldtype": "Select",
+   "label": "Registered Via",
+   "options": "Manual\n/register Command\nBot Added",
+   "read_only": 1
+  },
+  {
+   "fieldname": "registered_on",
+   "fieldtype": "Datetime",
+   "label": "Registered On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "registration_notes",
+   "fieldtype": "Small Text",
+   "label": "Review Notes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_reg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "registered_by_telegram_user_id",
+   "fieldtype": "Data",
+   "label": "Registered By (Telegram User ID)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "registered_by_name",
+   "fieldtype": "Data",
+   "label": "Registered By (Telegram Name)",
+   "read_only": 1
+  },
+  {
+   "description": "Only public chats have one.",
+   "fieldname": "telegram_username",
+   "fieldtype": "Data",
+   "label": "Public @username",
+   "read_only": 1
+  },
+  {
+   "fieldname": "is_forum",
+   "fieldtype": "Check",
+   "label": "Forum (Topics Enabled)",
+   "read_only": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-10-28 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Chat",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Verifier"
+  }
+ ],
+ "search_fields": "telegram_chat_id,chat_type,community",
+ "show_title_field_in_link": 0,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "chat_name",
+ "track_changes": 1
+}

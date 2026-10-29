@@ -5,10 +5,49 @@ app_description = "Manage employee access to Telegram groups and channels from E
 app_email = "girumtibebu@gmail.com"
 app_license = "mit"
 
+# Apps screen / desk
+add_to_apps_screen = [
+	{
+		"name": "telegram_access_manager",
+		"logo": "/assets/telegram_access_manager/images/telegram-access.svg",
+		"title": "Telegram Access",
+		"route": "/telegram-access",
+		"has_permission": "telegram_access_manager.permissions.has_app_permission",
+	}
+]
+
+# The frappe-ui portal is a single-page app: every /telegram-access/... URL serves the same page.
+website_route_rules = [{"from_route": "/telegram-access/<path:app_path>", "to_route": "telegram-access"}]
+
+before_install = "telegram_access_manager.install.before_install"
+after_migrate = "telegram_access_manager.install.after_migrate"
+
+doc_events = {
+	"Employee": {
+		"on_update": "telegram_access_manager.services.employee.on_employee_update",
+	}
+}
+
+scheduler_events = {
+	"cron": {
+		"*/5 * * * *": ["telegram_access_manager.tasks.retry_failed"],
+	},
+	"hourly": ["telegram_access_manager.tasks.expire_invite_links"],
+	"daily": [
+		"telegram_access_manager.tasks.review_inactive_employees",
+		"telegram_access_manager.tasks.purge_bot_updates",
+	],
+}
+
+app_include_js = ["telegram_access_manager.bundle.js", "/assets/telegram_access_manager/js/tam_redirect.js"]
+
+# Invite links are encrypted Password fields; never export them in fixtures.
+fixtures = []
+
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
