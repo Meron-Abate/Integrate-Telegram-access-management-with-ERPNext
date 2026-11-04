@@ -39,6 +39,7 @@ from telegram_access_manager.constants import (
 from telegram_access_manager.services import invites, notifications
 from telegram_access_manager.services.audit import log_error, log_for_access
 from telegram_access_manager.services.common import get_settings, system_save
+from telegram_access_manager.services.messages import render
 from telegram_access_manager.telegram.client import TelegramAPIError
 
 MODES = ("pending", "manual", "retry", "all", "resend")
@@ -324,7 +325,7 @@ def _save(doc):
 def _notify(client, settings, doc, result, context, request):
 	messages = []
 	if result.links and (context != "approval" or settings.notify_on_approval):
-		heading = _("Access approved") if context == "approval" else _("Your Telegram invitations")
+		heading = render("links_approved_heading" if context == "approval" else "links_heading")
 		messages.append(notifications.links_message(result.links, heading))
 	if context == "revocation" and not doc.is_active and settings.notify_on_revocation:
 		messages.append(notifications.revoked_all_message())
