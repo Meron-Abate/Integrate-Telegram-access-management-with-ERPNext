@@ -146,6 +146,9 @@ class TelegramClient:
 	def get_chat(self, chat_id):
 		return self.call("getChat", chat_id=chat_id)
 
+	def get_chat_member_count(self, chat_id):
+		return self.call("getChatMemberCount", chat_id=chat_id)
+
 	def get_chat_member(self, chat_id, user_id):
 		return self.call("getChatMember", chat_id=chat_id, user_id=user_id)
 

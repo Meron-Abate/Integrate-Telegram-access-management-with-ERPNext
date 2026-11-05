@@ -10,7 +10,7 @@ const props = defineProps({ label: String });
 
 const THEMES = {
 	green: ["Approved", "Active", "Up to date", "Joined", "Joined (admin)", "Ready", "Success"],
-	orange: ["Pending Verification", "Pending Approval", "To review", "Changes pending", "Review needed", "Invite sent", "Join requested", "Updating", "Ready (can't remove members)"],
+	orange: ["Pending Verification", "Pending Approval", "To review", "Changes pending", "Review needed", "Invite sent", "Join requested", "Updating", "Ready (can't remove members)", "Not approved", "Not approved (kept)"],
 	red: ["Rejected", "Error", "Problem", "Revoked", "Failed", "Bot needs admin rights", "Removed (banned)"],
 	blue: ["Info"],
 };

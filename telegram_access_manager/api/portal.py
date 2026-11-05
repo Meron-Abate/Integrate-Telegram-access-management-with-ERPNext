@@ -120,9 +120,23 @@ def get_home():
 		"counts": _counts(),
 		"requests": get_requests("pending", limit=5),
 		"chats": get_chats("review")[:5],
-		"unlisted": unlisted.pending(),
 		"activity": activity,
 	}
+
+
+@frappe.whitelist()
+def get_unlisted():
+	"""People who are in a managed chat without access in ERPNext (People → Not approved)."""
+	_portal_user()
+	return unlisted.pending()
+
+
+@frappe.whitelist(methods=["POST"])
+def unlisted_connect(name, employee, role=None):
+	"""Link a person found in a chat to an employee and role, so they have access like everyone else."""
+	_manager()
+	unlisted.connect(name, employee, role or None)
+	return unlisted.pending()
 
 
 @frappe.whitelist(methods=["POST"])
@@ -518,6 +532,87 @@ def _chat_payload(c):
 		"registered_by": c.registered_by_name,
 		"registered_on": c.registered_on,
 		"problem": c.last_error,
+	}
+
+
+@frappe.whitelist()
+def get_chat_members(name):
+	"""Who is in a chat, as far as this app knows.
+
+	Telegram bots cannot list a group's members, so this is built from the people approved in ERPNext (with the
+	membership status Telegram last confirmed) plus people found in the chat without approval. Telegram's own
+	member count is included so you can see whether the list is complete.
+	"""
+	_portal_user()
+	chat = frappe.get_doc(DT_CHAT, name)
+	rows = frappe.get_all(
+		"Employee Telegram Chat Permission",
+		filters={"parenttype": DT_ACCESS, "telegram_chat": name},
+		fields=["parent", "effective_permission", "membership_status"],
+	)
+	rows = [r for r in rows if r.effective_permission == ALLOW or r.membership_status in ("Member", "Chat Admin", "Invite Sent")]
+	people = {
+		a.name: a
+		for a in frappe.get_all(
+			DT_ACCESS,
+			filters={"name": ["in", [r.parent for r in rows] or [""]]},
+			fields=["name", "employee_name", "telegram_username", "display_name", "access_role", "is_active"],
+		)
+	}
+	members = []
+	for r in rows:
+		a = people.get(r.parent)
+		if not a:
+			continue
+		members.append(
+			{
+				"kind": "approved",
+				"name": a.name,
+				"person": a.employee_name or a.display_name,
+				"username": a.telegram_username,
+				"role": a.access_role,
+				"status": MEMBERSHIP_LABELS.get(r.membership_status or "Unknown", r.membership_status),
+				"joined": r.membership_status in ("Member", "Chat Admin"),
+				"admin": r.membership_status == "Chat Admin",
+				"allowed": r.effective_permission == ALLOW and bool(a.is_active),
+			}
+		)
+	for m in frappe.get_all(
+		"Telegram Unlisted Member",
+		filters={"telegram_chat": name, "status": ["in", ["Open", "Kept"]]},
+		fields=["name", "display_name", "telegram_user_id", "telegram_username", "status", "added_by", "self_joined"],
+	):
+		members.append(
+			{
+				"kind": "not_approved",
+				"name": m.name,
+				"person": m.display_name or m.telegram_user_id,
+				"username": m.telegram_username,
+				"role": None,
+				"status": "Not approved" if m.status == "Open" else "Not approved (kept)",
+				"joined": True,
+				"admin": False,
+				"allowed": False,
+				"added_by": m.added_by,
+				"self_joined": bool(m.self_joined),
+			}
+		)
+	members.sort(key=lambda m: (not m["joined"], (m["person"] or "").lower()))
+
+	telegram_count = None
+	try:
+		from telegram_access_manager import telegram as tg
+
+		telegram_count = tg.get_client().get_chat_member_count(chat.telegram_chat_id)
+	except Exception:  # bot not configured / not in the chat: the list is still useful
+		pass
+	return {
+		"chat": name,
+		"type": chat.chat_type,
+		"telegram_count": telegram_count,
+		"known_joined": sum(1 for m in members if m["joined"] and m["kind"] == "approved"),
+		"not_approved": sum(1 for m in members if m["kind"] == "not_approved"),
+		"members": members,
 	}
 
 
