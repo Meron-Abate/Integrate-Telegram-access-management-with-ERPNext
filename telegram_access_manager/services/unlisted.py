@@ -11,8 +11,10 @@ from frappe.utils import now_datetime
 
 from telegram_access_manager import telegram as tg
 from telegram_access_manager.constants import DT_CHAT, DT_UNLISTED, ROLE_MANAGER
+from telegram_access_manager.services import access as access_service
 from telegram_access_manager.services.audit import log_event
 from telegram_access_manager.services.common import clean_text, display_name_of, get_settings
+from telegram_access_manager.services.sync import enqueue_sync
 from telegram_access_manager.telegram.client import TelegramAPIError
 
 OPEN = "Open"
@@ -62,6 +64,7 @@ def _notify_managers(doc, chat):
 					"subject": subject,
 					"document_type": DT_UNLISTED,
 					"document_name": doc.name,
+					"link": "/telegram-access/people?tab=unlisted",
 				}
 			).insert(ignore_permissions=True)
 	except Exception:
@@ -117,3 +120,28 @@ def keep(name: str):
 	if doc.status != OPEN:
 		frappe.throw(_("This entry is already handled."))
 	doc.db_set("status", "Kept")
+
+
+def connect(name: str, employee: str, role: str | None = None):
+	"""Link a person found in a chat to an employee and role, giving them access like everyone else."""
+	doc = frappe.get_doc(DT_UNLISTED, name)
+	if doc.status != OPEN:
+		frappe.throw(_("This entry is already handled."))
+	if not employee:
+		frappe.throw(_("Choose the employee this Telegram account belongs to."))
+	if frappe.db.get_value("Employee", employee, "status") != "Active":
+		frappe.throw(_("Employee {0} is not active.").format(employee))
+	if role and not frappe.db.get_value("Telegram Access Role", role, "is_active"):
+		frappe.throw(_("Telegram Access Role {0} is not active.").format(role))
+
+	open_entries = frappe.get_all(DT_UNLISTED, {"telegram_user_id": doc.telegram_user_id, "status": OPEN}, ["name", "telegram_chat"])
+	access = access_service.create_or_update_access_for_member(
+		employee,
+		{"telegram_user_id": doc.telegram_user_id, "telegram_username": doc.telegram_username, "display_name": doc.display_name},
+		role,
+		[e.telegram_chat for e in open_entries],
+	)
+	for entry in open_entries:
+		frappe.db.set_value(DT_UNLISTED, entry.name, {"status": "Approved", "employee_telegram_access": access.name})
+	enqueue_sync(access.name, mode="pending", context="approval")
+	return access.name

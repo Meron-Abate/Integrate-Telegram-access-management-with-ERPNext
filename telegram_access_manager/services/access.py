@@ -132,6 +132,54 @@ def create_or_update_access_from_request(req):
 	return doc
 
 
+def create_or_update_access_for_member(employee: str, member: dict, role: str | None, chats: list[str]):
+	"""Create (or reactivate) the Employee Telegram Access for someone who is already in Telegram chats.
+
+	``member`` holds telegram_user_id, telegram_username and display_name. ``chats`` are the chats they are
+	already in; they are explicitly allowed so granting access never removes them from where they are.
+	"""
+	if conflict := find_identity_conflicts(employee, member["telegram_user_id"]):
+		frappe.throw(conflict)
+
+	name = frappe.db.get_value(DT_ACCESS, {"employee": employee}, "name")
+	is_new = not name
+	doc = frappe.new_doc(DT_ACCESS) if is_new else frappe.get_doc(DT_ACCESS, name)
+
+	doc.update(
+		{
+			"employee": employee,
+			"telegram_user_id": member["telegram_user_id"],
+			"telegram_username": member.get("telegram_username"),
+			"display_name": member.get("display_name"),
+			"is_active": 1,
+			"status": "Active",
+			"review_required": 0,
+			"review_reason": None,
+			"verified_by": frappe.session.user,
+			"verified_on": now_datetime(),
+			"verification_method": "Added in Telegram by an administrator",
+			"approved_by": frappe.session.user,
+			"access_role": role or None,
+			"last_interaction_on": now_datetime(),
+		}
+	)
+	wanted = {chat: ALLOW for chat in chats}
+	for row in doc.chat_permissions:
+		if row.telegram_chat in wanted:
+			row.override = wanted.pop(row.telegram_chat)
+	for chat, override in wanted.items():
+		doc.append("chat_permissions", {"telegram_chat": chat, "override": override})
+
+	system_save(doc, insert=is_new)
+	log_for_access(
+		doc,
+		"Access Created" if is_new else "Access Updated",
+		"Success",
+		_("Linked to employee from a person found in Telegram chats"),
+	)
+	return doc
+
+
 def revoke_access(name: str, reason: str | None = None, notify: bool = True):
 	from telegram_access_manager.services.sync import enqueue_sync
 

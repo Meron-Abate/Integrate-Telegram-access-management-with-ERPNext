@@ -132,6 +132,14 @@ def get_unlisted():
 
 
 @frappe.whitelist(methods=["POST"])
+def unlisted_connect(name, employee, role=None):
+	"""Link a person found in a chat to an employee and role, so they have access like everyone else."""
+	_manager()
+	unlisted.connect(name, employee, role or None)
+	return unlisted.pending()
+
+
+@frappe.whitelist(methods=["POST"])
 def unlisted_action(name, action):
 	"""A person found in a chat without access in ERPNext: remove them from Telegram, or keep them."""
 	_manager()
