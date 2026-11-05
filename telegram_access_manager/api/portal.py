@@ -120,9 +120,15 @@ def get_home():
 		"counts": _counts(),
 		"requests": get_requests("pending", limit=5),
 		"chats": get_chats("review")[:5],
-		"unlisted": unlisted.pending(),
 		"activity": activity,
 	}
+
+
+@frappe.whitelist()
+def get_unlisted():
+	"""People who are in a managed chat without access in ERPNext (People → Not approved)."""
+	_portal_user()
+	return unlisted.pending()
 
 
 @frappe.whitelist(methods=["POST"])

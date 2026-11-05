@@ -8,22 +8,12 @@
 			<Button v-if="boot.is_manager" label="Open Settings" @click="router.push('/settings')" />
 		</div>
 
-		<section v-if="data.unlisted?.length" class="rounded-lg border border-outline-amber-1 bg-surface-amber-1 p-4">
-			<h2 class="text-base font-semibold text-ink-amber-3">In a chat without access in ERPNext</h2>
-			<p class="mb-3 text-sm text-ink-amber-3">These people are in a managed group or channel but were not approved here, for example added by an admin directly in Telegram. Remove them, or keep them.</p>
-			<div class="divide-y divide-outline-amber-1 rounded-lg bg-surface-white">
-				<div v-for="m in data.unlisted" :key="m.name" class="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5">
-					<div class="min-w-0">
-						<div class="truncate text-base font-medium text-ink-gray-8">{{ m.display_name || m.telegram_user_id }}<span v-if="m.telegram_username" class="font-normal text-ink-gray-5"> @{{ m.telegram_username }}</span></div>
-						<div class="text-sm text-ink-gray-5">{{ m.chat }} · {{ m.self_joined ? "joined on their own" : m.added_by ? "added by " + m.added_by : "added by an admin" }} · {{ timeAgo(m.joined_on) }}</div>
-					</div>
-					<div v-if="boot.is_manager" class="flex gap-2">
-						<Button label="Keep" @click="unlistedAction(m, 'keep')" />
-						<Button theme="red" label="Remove from chat" @click="unlistedAction(m, 'remove')" />
-					</div>
-				</div>
+		<div v-if="data.counts?.unlisted" class="flex items-center justify-between rounded-lg border border-outline-amber-1 bg-surface-amber-1 px-4 py-3">
+			<div class="text-base text-ink-amber-3">
+				<span class="font-medium">{{ data.counts.unlisted }} {{ data.counts.unlisted === 1 ? "person is" : "people are" }} in a chat without approval.</span> For example added by an admin directly in Telegram.
 			</div>
-		</section>
+			<Button label="Review" @click="router.push('/people?tab=unlisted')" />
+		</div>
 
 		<div class="grid grid-cols-2 gap-3 md:grid-cols-4">
 			<button
@@ -101,13 +91,13 @@ import { Button } from "frappe-ui";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import { api, run, timeAgo } from "../api";
+import { api, timeAgo } from "../api";
 import PageHeader from "../components/PageHeader.vue";
 import StatusBadge from "../components/StatusBadge.vue";
 import { boot } from "../store";
 
 const router = useRouter();
-const data = ref({ counts: {}, requests: [], chats: [], unlisted: [], activity: [] });
+const data = ref({ counts: {}, requests: [], chats: [], activity: [] });
 
 const setupNeeded = computed(() => boot.loaded && !boot.bot.configured);
 const cards = computed(() => {
@@ -119,11 +109,6 @@ const cards = computed(() => {
 		{ label: "Chats to review", value: c.chats_to_review, to: "/chats?tab=review", alert: true },
 	];
 });
-
-async function unlistedAction(member, action) {
-	const list = await run(api("unlisted_action", { name: member.name, action }), action === "remove" ? "Removed from the chat" : "Kept");
-	if (list) data.value = { ...data.value, unlisted: list };
-}
 
 onMounted(async () => {
 	data.value = await api("get_home");
