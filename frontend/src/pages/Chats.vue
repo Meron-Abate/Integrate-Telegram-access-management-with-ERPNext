@@ -34,32 +34,37 @@
 			<div v-if="!members" class="flex justify-center py-8"><LoadingIndicator class="h-6 w-6 text-ink-gray-5" /></div>
 			<template v-else>
 				<p class="mb-1 text-sm text-ink-gray-5">
-					<span v-if="members.telegram_count != null">Telegram says <b>{{ members.telegram_count }}</b> members. </span>
-					<b>{{ members.known_joined }}</b> are listed here.
+					<span v-if="members.telegram_count != null">Telegram says <b>{{ members.telegram_count }}</b> people are in this chat. </span>
+					<b>{{ members.known_joined }}</b> of them are members approved here<span v-if="members.not_approved">, and <b>{{ members.not_approved }}</b> are not approved yet</span>.
 				</p>
 				<p class="mb-3 text-sm text-ink-gray-5">
 					Telegram does not let the bot list everyone in a group, so this shows the people ERPNext knows about. To give someone access for just this group, open them under People and switch the group on or off.
 				</p>
-				<div class="max-h-96 divide-y overflow-y-auto rounded-lg border">
-					<RouterLink
-						v-for="m in members.members"
-						:key="m.kind + m.name"
-						:to="m.kind === 'approved' ? `/people/${m.name}` : '/people?tab=unlisted'"
-						class="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-surface-gray-1"
-					>
-						<div class="min-w-0">
-							<div class="truncate text-base font-medium text-ink-gray-8">
-								{{ m.person }}<span v-if="m.username" class="font-normal text-ink-gray-5"> @{{ m.username }}</span>
-								<span v-if="m.admin" class="ml-1 rounded bg-surface-gray-2 px-1.5 py-0.5 text-xs font-normal text-ink-gray-6">Admin</span>
-							</div>
-							<div class="text-sm text-ink-gray-5">
-								<template v-if="m.kind === 'approved'">{{ m.role || "No role" }}<span v-if="!m.allowed"> · access being removed</span></template>
-								<template v-else>{{ m.self_joined ? "joined on their own" : m.added_by ? "added by " + m.added_by : "added by an admin" }}</template>
-							</div>
+				<div class="max-h-96 space-y-4 overflow-y-auto">
+					<div v-for="section in sections" :key="section.title">
+						<h3 class="mb-1 text-sm font-semibold text-ink-gray-7">{{ section.title }}</h3>
+						<div class="divide-y rounded-lg border">
+							<RouterLink
+								v-for="m in section.rows"
+								:key="m.kind + m.name"
+								:to="m.kind === 'approved' ? `/people/${m.name}` : '/people?tab=unlisted'"
+								class="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-surface-gray-1"
+							>
+								<div class="min-w-0">
+									<div class="truncate text-base font-medium text-ink-gray-8">
+										{{ m.person }}<span v-if="m.username" class="font-normal text-ink-gray-5"> @{{ m.username }}</span>
+										<span v-if="m.admin" class="ml-1 rounded bg-surface-gray-2 px-1.5 py-0.5 text-xs font-normal text-ink-gray-6">Admin</span>
+									</div>
+									<div class="text-sm text-ink-gray-5">
+										<template v-if="m.kind === 'approved'">{{ m.role || "No role" }}<span v-if="!m.allowed"> · access being removed</span></template>
+										<template v-else>{{ m.self_joined ? "joined on their own" : m.added_by ? "added by " + m.added_by : "added by an admin" }} · connect them to an employee under People → Not approved</template>
+									</div>
+								</div>
+								<StatusBadge :label="m.status" />
+							</RouterLink>
 						</div>
-						<StatusBadge :label="m.status" />
-					</RouterLink>
-					<div v-if="!members.members.length" class="px-4 py-8 text-center text-base text-ink-gray-5">Nobody known yet.</div>
+					</div>
+					<div v-if="!sections.length" class="rounded-lg border px-4 py-8 text-center text-base text-ink-gray-5">Nobody known yet.</div>
 				</div>
 			</template>
 		</template>
@@ -92,7 +97,7 @@
 
 <script setup>
 import { Button, Dialog, FeatherIcon, FormControl, LoadingIndicator, TabButtons, toast } from "frappe-ui";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import { api, run, timeAgo } from "../api";
@@ -117,6 +122,13 @@ const reason = ref("");
 const membersOpen = ref(false);
 const membersChat = ref(null);
 const members = ref(null);
+const sections = computed(() => {
+	const all = members.value?.members || [];
+	return [
+		{ title: "Members", rows: all.filter((m) => m.kind === "approved") },
+		{ title: "Not approved yet (not counted as members)", rows: all.filter((m) => m.kind === "not_approved") },
+	].filter((section) => section.rows.length);
+});
 
 async function openMembers(chat) {
 	membersChat.value = chat;

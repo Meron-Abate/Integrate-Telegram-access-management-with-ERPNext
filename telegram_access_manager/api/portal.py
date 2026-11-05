@@ -610,7 +610,8 @@ def get_chat_members(name):
 		"chat": name,
 		"type": chat.chat_type,
 		"telegram_count": telegram_count,
-		"known_joined": sum(1 for m in members if m["joined"]),
+		"known_joined": sum(1 for m in members if m["joined"] and m["kind"] == "approved"),
+		"not_approved": sum(1 for m in members if m["kind"] == "not_approved"),
 		"members": members,
 	}
 
