@@ -638,6 +638,7 @@ def chat_action(name, action, community=None, reason=None):
 		doc.save()
 	else:
 		frappe.throw(_("Unknown action"))
+	name = (result or {}).get("name") or name  # a check can rename the chat to its new Telegram title
 	row = frappe.get_doc(DT_CHAT, name)
 	return {"chat": _chat_payload(row), "result": result}
 
