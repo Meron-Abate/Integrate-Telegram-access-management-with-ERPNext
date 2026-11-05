@@ -22,6 +22,7 @@ from telegram_access_manager.constants import (
 )
 from telegram_access_manager.services import access as access_service
 from telegram_access_manager.services import invites
+from telegram_access_manager.services.messages import Raw, render
 from telegram_access_manager.services.audit import log_event
 from telegram_access_manager.services.common import clean_text, get_settings
 from telegram_access_manager.services.requests import submit_request_from_telegram
@@ -142,46 +143,23 @@ def handle_callback(query: dict) -> bool:
 
 
 def send_welcome(chat_id) -> bool:
-	settings = get_settings()
-	text = (
-		"<b>Company Telegram access</b>\n\n"
-		f"{escape_html(settings.privacy_notice or '')}\n\n"
-		"Tap <b>Request access</b> to ask HR for access. Your request is reviewed by an administrator; "
-		"access is granted only to the groups and channels approved for you.\n\n"
-		"Commands: /request, /status, /access, /help"
-	)
-	_reply(chat_id, text, MAIN_KEYBOARD)
+	_reply(chat_id, render("welcome", privacy_notice=get_settings().privacy_notice or ""), MAIN_KEYBOARD)
 	return True
 
 
 def send_help(chat_id) -> bool:
-	_reply(
-		chat_id,
-		"/start – privacy notice and options\n"
-		"/request – request access\n"
-		"/status – status of your request and access\n"
-		"/access – receive new invitation links for chats you are allowed to join\n"
-		"/register – (chat administrators) register a group or channel for ERPNext\n\n"
-		"This bot never asks for passwords or login codes.",
-	)
+	_reply(chat_id, render("help"))
 	return True
 
 
 def request_access(chat_id, user) -> bool:
 	outcome, name = submit_request_from_telegram(user)
-	if outcome == "created":
-		text = (
-			f"Your request <b>{escape_html(name)}</b> has been received and is awaiting identity verification by HR.\n\n"
-			"HR may contact you through the usual company channels to confirm it is you. "
-			"You will get a message here once a decision is made."
-		)
-	elif outcome == "existing":
-		text = f"You already have an open request (<b>{escape_html(name)}</b>). It is awaiting review – no need to request again."
-	elif outcome == "already_active":
-		text = "You already have approved access. Send /status to see your chats or /access to receive invitation links."
-	else:
-		text = "You have made too many requests today. Please try again tomorrow or contact HR."
-	_reply(chat_id, text)
+	key = {
+		"created": "request_received",
+		"existing": "request_existing",
+		"already_active": "request_already_active",
+	}.get(outcome, "request_rate_limited")
+	_reply(chat_id, render(key, request=name))
 	return True
 
 
@@ -197,17 +175,17 @@ def send_status(chat_id, user) -> bool:
 			order_by="idx asc",
 		)
 		lines = [f"• {escape_html(r.telegram_chat)} – {escape_html(r.membership_status or 'Unknown')}" for r in rows]
-		text = "<b>Your access is active.</b>\n\n" + ("\n".join(lines) if lines else "No chats are currently assigned.")
-		_reply(chat_id, text)
+		chats = Raw("\n".join(lines) if lines else "No chats are currently assigned.")
+		_reply(chat_id, render("status_active", chats=chats))
 		return True
 
 	req = frappe.db.get_value(
 		DT_REQUEST, {"telegram_user_id": user_id}, ["name", "status"], as_dict=True, order_by="creation desc"
 	)
 	if not req:
-		_reply(chat_id, "You have no access request yet. Send /request to ask for access.")
+		_reply(chat_id, render("status_no_request"))
 	else:
-		_reply(chat_id, f"Request <b>{escape_html(req.name)}</b>: {escape_html(req.status)}")
+		_reply(chat_id, render("status_request", request=req.name, status=req.status))
 	return True
 
 
@@ -215,14 +193,14 @@ def resend_links(chat_id, user) -> bool:
 	user_id = str(user["id"])
 	access = frappe.db.get_value(DT_ACCESS, {"telegram_user_id": user_id, "is_active": 1}, "name")
 	if not access:
-		_reply(chat_id, "You do not have approved access yet. Send /status to check your request.")
+		_reply(chat_id, render("access_not_approved"))
 		return True
 	key = f"tam:resend:{user_id}"
 	if frappe.cache.get_value(key):
-		_reply(chat_id, "New links were requested recently. Please wait a few minutes and try again.")
+		_reply(chat_id, render("access_cooldown"))
 		return True
 	frappe.cache.set_value(key, 1, expires_in_sec=RESEND_COOLDOWN_SECONDS)
-	_reply(chat_id, "Checking your access – you will receive links for chats you have not joined yet.")
+	_reply(chat_id, render("access_checking"))
 	enqueue_sync(access, mode="resend", context="resend")
 	return True
 
