@@ -11,6 +11,7 @@
   "integration_section",
   "enabled",
   "update_mode",
+  "process_updates_instantly",
   "public_base_url",
   "column_break_int",
   "status_html",
@@ -126,6 +127,13 @@
    "fieldtype": "Select",
    "label": "Update Mode",
    "options": "Webhook\nPolling"
+  },
+  {
+   "default": "1",
+   "description": "Answer commands such as /register and /request right away, in the same request Telegram sends, instead of waiting for a background worker. Turn off only if the web server becomes slow.",
+   "fieldname": "process_updates_instantly",
+   "fieldtype": "Check",
+   "label": "Reply Immediately"
   },
   {
    "description": "HTTPS base URL Telegram should call, e.g. https://erp.example.com",
@@ -557,7 +565,7 @@
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-11-05 10:00:00.000000",
+ "modified": "2026-11-05 14:00:00.000000",
  "modified_by": "Administrator",
  "module": "Telegram Access Manager",
  "name": "Telegram Access Settings",
