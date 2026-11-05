@@ -67,6 +67,22 @@
 			</div>
 		</section>
 
+		<section class="rounded-lg border p-5">
+			<h2 class="text-base font-semibold text-ink-gray-9">Telegram admin rights</h2>
+			<p class="mt-1 text-sm text-ink-gray-5">Rights given to people you switch on as Telegram admin (People → person). The bot must be an administrator with “Add new admins” in those chats.</p>
+			<div class="mt-3 space-y-3">
+				<Switch v-model="values.admin_can_delete_messages" label="Delete messages" />
+				<Switch v-model="values.admin_can_invite_users" label="Invite users via link" />
+				<Switch v-model="values.admin_can_pin_messages" label="Pin messages (groups)" />
+				<Switch v-model="values.admin_can_restrict_members" label="Ban / restrict users" />
+				<Switch v-model="values.admin_can_change_info" label="Change chat info" />
+				<Switch v-model="values.admin_can_manage_video_chats" label="Manage video chats" />
+				<Switch v-model="values.admin_can_manage_topics" label="Manage topics (forum groups)" />
+				<Switch v-model="values.admin_can_post_messages" label="Post messages (channels)" />
+				<Switch v-model="values.admin_can_edit_messages" label="Edit others' messages (channels)" />
+			</div>
+		</section>
+
 		<a href="/app/telegram-access-settings" class="inline-flex items-center gap-1.5 text-sm text-ink-gray-5 hover:text-ink-gray-8">
 			<FeatherIcon name="external-link" class="h-3.5 w-3.5" /> Advanced settings (retries, limits, removal rules)
 		</a>
@@ -81,7 +97,8 @@ import { api, run } from "../api";
 import PageHeader from "../components/PageHeader.vue";
 import { loadBoot } from "../store";
 
-const CHECKS = ["enabled", "notify_on_approval", "notify_on_rejection", "notify_on_revocation", "auto_revoke_on_employee_exit"];
+const ADMIN_RIGHTS = ["admin_can_delete_messages", "admin_can_invite_users", "admin_can_pin_messages", "admin_can_restrict_members", "admin_can_change_info", "admin_can_manage_video_chats", "admin_can_manage_topics", "admin_can_post_messages", "admin_can_edit_messages"];
+const CHECKS = [...ADMIN_RIGHTS, "enabled", "notify_on_approval", "notify_on_rejection", "notify_on_revocation", "auto_revoke_on_employee_exit"];
 const modes = [
 	{ label: "Polling (local testing)", value: "Polling" },
 	{ label: "Webhook (live site)", value: "Webhook" },

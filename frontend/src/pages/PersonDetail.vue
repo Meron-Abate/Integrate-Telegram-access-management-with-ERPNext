@@ -40,6 +40,10 @@
 				</dl>
 			</div>
 			<div class="rounded-lg border p-4">
+				<h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-gray-5">Telegram admin</h3>
+				<Switch v-model="telegramAdmin" :disabled="!editable" label="Make admin in their chats" description="The bot promotes them in every group and channel they are in, with the rights set in Settings. Turning it off demotes them." />
+			</div>
+			<div class="rounded-lg border p-4">
 				<h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-gray-5">History</h3>
 				<dl class="space-y-2 text-base">
 					<div><dt class="text-sm text-ink-gray-5">Approved by</dt><dd class="text-ink-gray-8">{{ person.approved_by || "—" }}</dd></div>
@@ -66,7 +70,7 @@
 </template>
 
 <script setup>
-import { Button, Dialog, Dropdown, FormControl, LoadingIndicator } from "frappe-ui";
+import { Button, Dialog, Dropdown, FormControl, LoadingIndicator, Switch } from "frappe-ui";
 import { computed, onMounted, ref, watch } from "vue";
 
 import { api, run, timeAgo } from "../api";
@@ -81,6 +85,7 @@ const person = ref(null);
 const roles = ref([]);
 const role = ref("");
 const access = ref({});
+const telegramAdmin = ref(false);
 const snapshot = ref("");
 const saving = ref(false);
 const busy = ref(false);
@@ -96,7 +101,7 @@ const roleOptions = computed(() => [
 	...roles.value.filter((r) => r.active).map((r) => ({ label: r.name, value: r.name })),
 ]);
 const chatRows = computed(() => (person.value?.chats || []).map((c) => ({ ...c, in_role: roleChats.value.has(c.chat) })));
-const state = computed(() => JSON.stringify([role.value, access.value]));
+const state = computed(() => JSON.stringify([role.value, access.value, telegramAdmin.value]));
 const dirty = computed(() => editable.value && state.value !== snapshot.value);
 const hasProblem = computed(() => (person.value?.chats || []).some((c) => c.problem));
 const moreActions = computed(() => {
@@ -111,6 +116,7 @@ function apply(data) {
 	loading = true;
 	person.value = data;
 	role.value = data.role || "";
+	telegramAdmin.value = !!data.telegram_admin;
 	access.value = Object.fromEntries(data.chats.map((c) => [c.chat, c.access]));
 	snapshot.value = state.value;
 	loading = false;
@@ -131,7 +137,7 @@ watch(
 
 async function save() {
 	saving.value = true;
-	const data = await run(api("save_person", { name: props.name, role: role.value, access: access.value }), "Saved. Telegram is being updated.");
+	const data = await run(api("save_person", { name: props.name, role: role.value, access: access.value, telegram_admin: telegramAdmin.value ? 1 : 0 }), "Saved. Telegram is being updated.");
 	saving.value = false;
 	if (data) {
 		apply(data);

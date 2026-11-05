@@ -328,6 +328,8 @@ def handle_chat_member(update: dict) -> bool:
 
 	if access:
 		_set_membership(access.name, chat.name, status if status in (MEMBER, CHAT_ADMIN) else LEFT)
+		if status == MEMBER and row and frappe.db.get_value(DT_ACCESS, access.name, "telegram_admin"):
+			enqueue_sync(access.name, mode="all", context="admin", notify=False)  # joined: apply the admin switch
 		log_event(
 			"Member Joined" if status in (MEMBER, CHAT_ADMIN) else "Member Left",
 			"Info",

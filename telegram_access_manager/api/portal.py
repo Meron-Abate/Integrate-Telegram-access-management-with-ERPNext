@@ -397,6 +397,7 @@ def _person_payload(doc):
 		"telegram_user_id": doc.telegram_user_id,
 		"role": doc.access_role,
 		"active": bool(doc.is_active),
+		"telegram_admin": bool(doc.telegram_admin),
 		"status": _people_status(doc),
 		"review_reason": doc.review_reason if doc.review_required else None,
 		"approved_by": _user_name(doc.approved_by),
@@ -415,13 +416,15 @@ def get_person(name):
 
 
 @frappe.whitelist(methods=["POST"])
-def save_person(name, role=None, access=None, apply=1):
+def save_person(name, role=None, access=None, apply=1, telegram_admin=None):
 	"""Save role/chat changes and (by default) apply them to Telegram."""
 	_manager()
 	doc = frappe.get_doc(DT_ACCESS, name)
 	if not doc.is_active:
 		frappe.throw(_("Access is revoked. Restore it first."))
 	doc.access_role = role or None
+	if telegram_admin is not None:
+		doc.telegram_admin = cint(telegram_admin)
 	wanted = dict(_to_overrides(doc.access_role, access))
 	for row in doc.chat_permissions:
 		row.override = wanted.pop(row.telegram_chat, INHERIT)
@@ -586,6 +589,15 @@ SETTINGS_FIELDS = (
 	"auto_revoke_on_employee_exit",
 	"invite_link_expiry_hours",
 	"support_contact",
+	"admin_can_delete_messages",
+	"admin_can_invite_users",
+	"admin_can_pin_messages",
+	"admin_can_restrict_members",
+	"admin_can_change_info",
+	"admin_can_manage_video_chats",
+	"admin_can_manage_topics",
+	"admin_can_post_messages",
+	"admin_can_edit_messages",
 )
 
 

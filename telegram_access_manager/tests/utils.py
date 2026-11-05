@@ -92,6 +92,11 @@ class FakeTelegram:
 		self._record("declineChatJoinRequest", chat_id=chat_id, user_id=user_id)
 		return True
 
+	def promote_chat_member(self, chat_id, user_id, **rights):
+		self._record("promoteChatMember", chat_id=chat_id, user_id=user_id, **rights)
+		self.set_member(chat_id, user_id, "administrator" if any(rights.values()) else "member")
+		return True
+
 	def ban_chat_member(self, chat_id, user_id):
 		self._record("banChatMember", chat_id=chat_id, user_id=user_id)
 		self.set_member(chat_id, user_id, "kicked")

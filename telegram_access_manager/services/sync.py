@@ -177,6 +177,56 @@ def _row_failed(row, err: TelegramAPIError, settings, result, doc, chat):
 		frappe.db.set_value(DT_CHAT, chat.name, updates, update_modified=False)
 
 
+ADMIN_RIGHT_FIELDS = {
+	"can_delete_messages": "admin_can_delete_messages",
+	"can_invite_users": "admin_can_invite_users",
+	"can_restrict_members": "admin_can_restrict_members",
+	"can_change_info": "admin_can_change_info",
+	"can_manage_video_chats": "admin_can_manage_video_chats",
+}
+
+
+def _admin_rights(settings, chat) -> dict:
+	"""Rights to grant in this chat; rights Telegram only accepts for other chat types are left out."""
+	rights = {right: bool(cint(settings.get(field))) for right, field in ADMIN_RIGHT_FIELDS.items()}
+	rights["can_manage_chat"] = True
+	if chat.chat_type == "Channel":
+		rights["can_post_messages"] = bool(cint(settings.admin_can_post_messages))
+		rights["can_edit_messages"] = bool(cint(settings.admin_can_edit_messages))
+	else:
+		rights["can_pin_messages"] = bool(cint(settings.admin_can_pin_messages))
+		if cint(chat.get("is_forum")):
+			rights["can_manage_topics"] = bool(cint(settings.admin_can_manage_topics))
+	return rights
+
+
+def _demote(client, settings, doc, row, chat, user_id):
+	client.promote_chat_member(chat.telegram_chat_id, user_id, **{k: False for k in _admin_rights(settings, chat)})
+	row.admin_granted = 0
+	log_for_access(doc, "Access Updated", "Success", _("Removed as administrator (Telegram confirmed)"), chat.name)
+
+
+def _sync_admin(client, settings, doc, row, chat, user_id, actual) -> str:
+	"""Promote/demote an allowed member to match ``doc.telegram_admin``; returns the resulting membership.
+
+	Only administrators promoted by this app (``row.admin_granted``) are ever demoted: the chat owner
+	and admins made by hand in Telegram are left alone.
+	"""
+	if doc.telegram_admin:
+		if actual == MEMBER:
+			client.promote_chat_member(chat.telegram_chat_id, user_id, **_admin_rights(settings, chat))
+			row.admin_granted = 1
+			log_for_access(doc, "Access Updated", "Success", _("Promoted to administrator (Telegram confirmed)"), chat.name)
+			return CHAT_ADMIN
+		return actual
+	if actual == CHAT_ADMIN and row.admin_granted:
+		_demote(client, settings, doc, row, chat, user_id)
+		return MEMBER
+	if actual != CHAT_ADMIN:
+		row.admin_granted = 0
+	return actual
+
+
 def _sync_row(client, settings, doc, row, chat, result, context):
 	user_id = int(doc.telegram_user_id)
 	want = bool(doc.is_active) and row.effective_permission == ALLOW and bool(chat.is_active)
@@ -188,7 +238,7 @@ def _sync_row(client, settings, doc, row, chat, result, context):
 
 	if want:
 		if actual in (MEMBER, CHAT_ADMIN):
-			return _row_ok(row, actual)
+			return _row_ok(row, _sync_admin(client, settings, doc, row, chat, user_id, actual))
 		if actual == BANNED:
 			if chat.chat_type == "Group":
 				return _row_action_required(
@@ -202,6 +252,9 @@ def _sync_row(client, settings, doc, row, chat, result, context):
 
 	# Not (or no longer) allowed: revoke links, then remove from the chat if Telegram allows it.
 	invites.revoke_links(client, doc, chat)
+	if actual == CHAT_ADMIN and row.admin_granted:
+		_demote(client, settings, doc, row, chat, user_id)
+		actual = MEMBER
 	if actual == CHAT_ADMIN:
 		return _row_action_required(
 			row, _("User is an administrator/owner of this chat; the bot cannot remove them. Remove manually."), result, doc

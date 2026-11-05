@@ -1,6 +1,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
+from frappe.utils import cint
 
 from telegram_access_manager.constants import MANAGER_ROLES, ROW_ACTION_REQUIRED, ROW_FAILED, VERIFIER_ROLES
 from telegram_access_manager.services import access as access_service
@@ -29,12 +30,14 @@ PROTECTED_FIELDS = (
 	"last_sync_error",
 )
 # Child columns that only the system writes (administrators edit telegram_chat and override).
-PROTECTED_ROW_FIELDS = ("membership_status", "sync_status", "sync_attempts", "next_retry_on", "last_error", "retryable")
+PROTECTED_ROW_FIELDS = ("membership_status", "admin_granted", "sync_status", "sync_attempts", "next_retry_on", "last_error", "retryable")
 
 
 class EmployeeTelegramAccess(Document):
 	def validate(self):
 		self.telegram_user_id = validate_telegram_user_id(self.telegram_user_id)
+		if not self.is_active:
+			self.telegram_admin = 0
 		if not self.flags.tam_system_update:
 			if self.is_new():
 				frappe.throw(_("Employee Telegram Access is created by approving a Telegram Access Request."))
@@ -64,6 +67,14 @@ class EmployeeTelegramAccess(Document):
 		if self.flags.tam_system_update:
 			return
 		before = self.get_doc_before_save()
+		if before and cint(before.telegram_admin) != cint(self.telegram_admin):
+			log_for_access(
+				self,
+				"Access Updated",
+				"Info",
+				_("Telegram admin switched on") if self.telegram_admin else _("Telegram admin switched off"),
+			)
+			enqueue_sync(self.name, mode="all", context="admin", notify=False)
 		if before and (
 			before.access_role != self.access_role
 			or sorted((r.telegram_chat, r.override) for r in before.chat_permissions)

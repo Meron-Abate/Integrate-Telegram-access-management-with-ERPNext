@@ -28,6 +28,7 @@
   "approved_by",
   "access_section",
   "access_role",
+  "telegram_admin",
   "chat_permissions",
   "effective_preview",
   "sync_section",
@@ -190,6 +191,13 @@
    "options": "Telegram Access Role"
   },
   {
+   "default": "0",
+   "description": "Promote this person to administrator in every chat they are a member of, using the rights in Telegram Access Settings. Turning it off demotes them again.",
+   "fieldname": "telegram_admin",
+   "fieldtype": "Check",
+   "label": "Telegram Admin"
+  },
+  {
    "description": "Precedence: individual Deny > individual Allow > role. 'Effective' is the desired state; 'Actual Membership' is what Telegram last confirmed.",
    "fieldname": "chat_permissions",
    "fieldtype": "Table",
@@ -245,7 +253,7 @@
    "link_fieldname": "employee_telegram_access"
   }
  ],
- "modified": "2026-10-28 12:00:00.000000",
+ "modified": "2026-11-05 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Telegram Access Manager",
  "name": "Employee Telegram Access",
