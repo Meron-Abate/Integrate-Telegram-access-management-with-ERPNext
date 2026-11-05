@@ -21,7 +21,7 @@ from telegram_access_manager.constants import (
 	REMOVED,
 )
 from telegram_access_manager.services import access as access_service
-from telegram_access_manager.services import invites
+from telegram_access_manager.services import invites, unlisted
 from telegram_access_manager.services.messages import Raw, render
 from telegram_access_manager.services.audit import log_event
 from telegram_access_manager.services.common import clean_text, get_settings
@@ -340,6 +340,11 @@ def handle_chat_member(update: dict) -> bool:
 			telegram_user_id=user_id,
 		)
 
+	if status == MEMBER and not row and chat.is_active:
+		unlisted.record(chat, user, update.get("from") or {}, access)  # e.g. added by an admin without the bot
+	elif status != MEMBER:
+		unlisted.resolve(chat.name, user_id, "Left")
+
 	unauthorized_join = status == MEMBER and not row and link_name.startswith(INVITE_LINK_PREFIX)
 	if unauthorized_join:
 		details = "Joined through an app-managed link without an explicit Allow"
@@ -350,6 +355,7 @@ def handle_chat_member(update: dict) -> bool:
 			if chat.chat_type != "Group" and not settings.ban_on_removal:
 				client.unban_chat_member(chat.telegram_chat_id, int(user_id))
 			details += "; removed (Telegram confirmed)"
+			unlisted.resolve(chat.name, user_id, "Removed")
 			if access:
 				_set_membership(access.name, chat.name, REMOVED)
 		log_event("Unauthorized Member", "Failed", details, telegram_chat=chat.name, telegram_user_id=user_id)

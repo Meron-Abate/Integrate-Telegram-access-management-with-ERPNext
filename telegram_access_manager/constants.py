@@ -17,6 +17,8 @@ DT_ACCESS = "Employee Telegram Access"
 DT_AUDIT = "Telegram Access Audit Log"
 DT_INVITE = "Telegram Invite Link"
 DT_UPDATE = "Telegram Bot Update"
+DT_UNLISTED = "Telegram Unlisted Member"
+DT_UNLISTED = "Telegram Unlisted Member"
 
 # Access request statuses
 REQ_PENDING_VERIFICATION = "Pending Verification"
