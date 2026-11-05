@@ -9,26 +9,39 @@
 
 		<div v-if="tab === 'unlisted'" class="space-y-3">
 			<p class="text-sm text-ink-gray-5">
-				People who are in a managed group or channel but were not approved here. Remove them from the chat, or keep them.
+				People who are in a managed group or channel but were not approved here. Click one to link them to an employee and a role.
 			</p>
-			<div class="divide-y rounded-lg border">
-				<div v-for="m in unlistedRows" :key="m.name" class="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5">
-					<div class="min-w-0">
-						<div class="truncate text-base font-medium text-ink-gray-8">
-							{{ m.display_name || m.telegram_user_id }}<span v-if="m.telegram_username" class="font-normal text-ink-gray-5"> @{{ m.telegram_username }}</span>
-						</div>
-						<div class="text-sm text-ink-gray-5">
-							{{ m.chat }} · {{ m.self_joined ? "joined on their own" : m.added_by ? "added by " + m.added_by : "added by an admin" }} · {{ timeAgo(m.joined_on) }}
-						</div>
+			<ListView
+				:columns="unlistedColumns"
+				:rows="unlistedRows"
+				row-key="name"
+				:options="{ selectable: false, showTooltip: false, onRowClick: (row) => boot.is_manager && openConnect(row), emptyState: { title: 'Nobody here' } }"
+			>
+				<template #cell="{ column, row, item }">
+					<div v-if="column.key === 'person'" class="min-w-0">
+						<div class="truncate text-base font-medium text-ink-gray-8">{{ row.display_name || row.telegram_user_id }}</div>
+						<div class="truncate text-sm text-ink-gray-5">{{ row.telegram_username ? "@" + row.telegram_username : row.telegram_user_id }}</div>
 					</div>
-					<div v-if="boot.is_manager" class="flex gap-2">
-						<Button variant="solid" label="Connect to employee" @click="openConnect(m)" />
-						<Button label="Keep" @click="unlistedAction(m, 'keep')" />
-						<Button theme="red" label="Remove from chat" @click="unlistedAction(m, 'remove')" />
+					<span v-else-if="column.key === 'added_by'" class="truncate text-base text-ink-gray-7">
+						{{ row.self_joined ? "Joined on their own" : row.added_by || "An admin" }}
+					</span>
+					<span v-else-if="column.key === 'joined_on'" class="truncate text-base text-ink-gray-7">{{ timeAgo(row.joined_on) }}</span>
+					<span v-else-if="column.key === 'chat'" class="truncate text-base text-ink-gray-7">{{ row.chat }}</span>
+					<div v-else-if="column.key === 'status'" class="flex items-center gap-2">
+						<button
+							type="button"
+							class="rounded"
+							:disabled="!boot.is_manager"
+							@click.stop="openConnect(row)"
+						>
+							<Badge label="Not approved · Connect" theme="orange" variant="subtle" size="md" class="cursor-pointer" />
+						</button>
+						<span v-if="boot.is_manager" @click.stop>
+							<Dropdown :options="rowActions(row)"><Button variant="ghost" icon="more-horizontal" /></Dropdown>
+						</span>
 					</div>
-				</div>
-				<div v-if="!unlistedRows.length" class="px-4 py-6 text-center text-base text-ink-gray-5">Nobody here.</div>
-			</div>
+				</template>
+			</ListView>
 		</div>
 
 		<ListView
@@ -72,7 +85,7 @@
 </template>
 
 <script setup>
-import { Button, Dialog, FormControl, ListView, TabButtons, TextInput, debounce } from "frappe-ui";
+import { Badge, Button, Dialog, Dropdown, FormControl, ListView, TabButtons, TextInput, debounce } from "frappe-ui";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -95,6 +108,17 @@ const search = ref("");
 const rows = ref([]);
 const unlisted = ref([]);
 const how = ref("all");
+const unlistedColumns = [
+	{ label: "Person", key: "person", width: 2 },
+	{ label: "Added by", key: "added_by", width: 1.5 },
+	{ label: "When", key: "joined_on", width: 1 },
+	{ label: "Group", key: "chat", width: 1.5 },
+	{ label: "Status", key: "status", width: 2 },
+];
+const rowActions = (row) => [
+	{ label: "Keep without an employee", icon: "check", onClick: () => unlistedAction(row, "keep") },
+	{ label: "Remove from chat", icon: "user-x", onClick: () => unlistedAction(row, "remove") },
+];
 const howOptions = [
 	{ label: "All", value: "all" },
 	{ label: "Added by an admin", value: "admin" },
