@@ -152,7 +152,7 @@ async function act(chat, action) {
 	if (!data) return;
 	if (action === "check") {
 		const r = data.result || {};
-		r.ok ? toast.success(`Bot can manage ${chat.name}`) : toast.error(r.error || (r.messages || []).join(" ") || "The bot can't manage this chat yet");
+		r.ok ? toast.success(r.name && r.name !== chat.name ? `Bot can manage it. Renamed to ${r.name}` : `Bot can manage ${chat.name}`) : toast.error(r.error || (r.messages || []).join(" ") || "The bot can't manage this chat yet");
 	}
 	await load();
 	loadBoot();

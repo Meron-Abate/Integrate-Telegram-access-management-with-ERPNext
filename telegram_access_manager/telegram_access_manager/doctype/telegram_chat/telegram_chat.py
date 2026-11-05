@@ -102,4 +102,26 @@ class TelegramChat(Document):
 
 		frappe.db.set_value(self.doctype, self.name, values)
 		log_event("Chat Validated", "Success" if is_admin and can_invite else "Failed", "; ".join(messages) or "OK", telegram_chat=self.name)
-		return {"ok": bool(is_admin and can_invite), "messages": messages, "title": values["telegram_title"]}
+		name = self._rename_to_title(values["telegram_title"], messages)
+		return {"ok": bool(is_admin and can_invite), "messages": messages, "title": values["telegram_title"], "name": name}
+
+	def _rename_to_title(self, title: str, messages: list) -> str:
+		"""Make the chat's name in the app match its current Telegram title. Returns the (new) name."""
+		title = (title or "").strip()
+		if not title or title == self.name:
+			return self.name
+		new = title
+		if frappe.db.exists(self.doctype, new):
+			new = f"{title[:120]} ({self.telegram_chat_id})"[:140]
+			if new == self.name or frappe.db.exists(self.doctype, new):
+				return self.name
+		old = self.name
+		try:
+			frappe.rename_doc(self.doctype, old, new, force=True)
+		except Exception:
+			frappe.log_error(title="Telegram chat rename failed")
+			messages.append(_("The chat title changed in Telegram but could not be renamed here."))
+			return old
+		log_event("Chat Validated", "Info", f"Renamed from “{old}” to “{new}” to match its Telegram title", telegram_chat=new)
+		messages.append(_("Renamed to match the Telegram title: {0}.").format(new))
+		return new
