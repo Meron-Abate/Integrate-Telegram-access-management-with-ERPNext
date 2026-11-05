@@ -29,7 +29,7 @@ from telegram_access_manager.constants import (
 	VERIFIER_ROLES,
 )
 from telegram_access_manager.credentials import get_config_status
-from telegram_access_manager.services import permissions
+from telegram_access_manager.services import permissions, unlisted
 from telegram_access_manager.services.common import has_any_role, require_roles
 
 MEMBERSHIP_LABELS = {
@@ -92,6 +92,7 @@ def _counts():
 		"problems": frappe.db.count(DT_ACCESS, {"is_active": 1, "sync_status": ["in", ["Failed", "Partially Synced"]]}),
 		"chats_to_review": frappe.db.count(DT_CHAT, {"is_active": 0, "registration_status": ["in", REVIEW_STATUSES]}),
 		"chats": frappe.db.count(DT_CHAT, {"is_active": 1}),
+		"unlisted": unlisted.count(),
 	}
 
 
@@ -119,8 +120,22 @@ def get_home():
 		"counts": _counts(),
 		"requests": get_requests("pending", limit=5),
 		"chats": get_chats("review")[:5],
+		"unlisted": unlisted.pending(),
 		"activity": activity,
 	}
+
+
+@frappe.whitelist(methods=["POST"])
+def unlisted_action(name, action):
+	"""A person found in a chat without access in ERPNext: remove them from Telegram, or keep them."""
+	_manager()
+	if action == "remove":
+		unlisted.remove(name)
+	elif action == "keep":
+		unlisted.keep(name)
+	else:
+		frappe.throw(_("Unknown action"))
+	return unlisted.pending()
 
 
 def _employee_names(employees):

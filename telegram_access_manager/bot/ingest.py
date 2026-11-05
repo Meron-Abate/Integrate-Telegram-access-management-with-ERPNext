@@ -5,11 +5,12 @@ Each update is recorded once by ``update_id`` (Telegram re-delivers updates unti
 """
 
 import frappe
-from frappe.utils import now_datetime
+from frappe.utils import cint, now_datetime
 
 from telegram_access_manager.credentials import current_bot_id
 from telegram_access_manager.constants import DT_UPDATE
 from telegram_access_manager.services.audit import log_error
+from telegram_access_manager.services.common import get_settings
 from telegram_access_manager.telegram.client import redact
 
 UPDATE_TYPES = ("message", "edited_message", "channel_post", "callback_query", "chat_join_request", "chat_member", "my_chat_member")
@@ -56,6 +57,10 @@ def ingest_update(update: dict, enqueue: bool = True) -> str:
 
 	# Join request queries must be answered within 10 seconds: never wait for a worker queue.
 	if (update.get("chat_join_request") or {}).get("query_id"):
+		enqueue = False
+	# Replies should feel instant: handle the update in this request instead of waiting for a background
+	# worker. Slow work (syncing with Telegram) is still queued by the handlers themselves.
+	elif enqueue and cint(get_settings().process_updates_instantly):
 		enqueue = False
 
 	if enqueue:

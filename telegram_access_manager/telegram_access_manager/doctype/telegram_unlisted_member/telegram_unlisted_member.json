@@ -1,0 +1,109 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2026-11-05 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "telegram_chat",
+  "telegram_user_id",
+  "display_name",
+  "telegram_username",
+  "column_break_1",
+  "status",
+  "joined_on",
+  "added_by",
+  "self_joined",
+  "employee_telegram_access"
+ ],
+ "fields": [
+  {
+   "fieldname": "telegram_chat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Telegram Chat",
+   "options": "Telegram Chat",
+   "reqd": 1
+  },
+  {
+   "fieldname": "telegram_user_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Telegram User ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "display_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name"
+  },
+  {
+   "fieldname": "telegram_username",
+   "fieldtype": "Data",
+   "label": "Username"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Open\nRemoved\nKept\nLeft\nApproved"
+  },
+  {
+   "fieldname": "joined_on",
+   "fieldtype": "Datetime",
+   "label": "Joined On"
+  },
+  {
+   "description": "Who added them, as reported by Telegram.",
+   "fieldname": "added_by",
+   "fieldtype": "Data",
+   "label": "Added By"
+  },
+  {
+   "default": "0",
+   "description": "They joined on their own (for example through a public link) rather than being added by an administrator.",
+   "fieldname": "self_joined",
+   "fieldtype": "Check",
+   "label": "Joined Themselves"
+  },
+  {
+   "fieldname": "employee_telegram_access",
+   "fieldtype": "Link",
+   "label": "Employee Telegram Access",
+   "options": "Employee Telegram Access"
+  }
+ ],
+ "in_create": 1,
+ "links": [],
+ "modified": "2026-11-05 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "name": "Telegram Unlisted Member",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Manager"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
