@@ -176,6 +176,10 @@ class TelegramClient:
 	def decline_chat_join_request(self, chat_id, user_id):
 		return self.call("declineChatJoinRequest", chat_id=chat_id, user_id=user_id)
 
+	def promote_chat_member(self, chat_id, user_id, **rights):
+		"""Grant (True) or remove (False) administrator rights. All rights False demotes to a plain member."""
+		return self.call("promoteChatMember", chat_id=chat_id, user_id=user_id, **rights)
+
 	def ban_chat_member(self, chat_id, user_id):
 		return self.call("banChatMember", chat_id=chat_id, user_id=user_id)
 

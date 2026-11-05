@@ -57,6 +57,17 @@
   "msg_request_cancelled",
   "msg_access_changed",
   "msg_access_revoked",
+  "admin_rights_section",
+  "admin_can_delete_messages",
+  "admin_can_invite_users",
+  "admin_can_pin_messages",
+  "admin_can_restrict_members",
+  "admin_can_change_info",
+  "column_break_admin",
+  "admin_can_manage_video_chats",
+  "admin_can_manage_topics",
+  "admin_can_post_messages",
+  "admin_can_edit_messages",
   "notification_section",
   "notify_on_approval",
   "notify_on_rejection",
@@ -402,6 +413,70 @@
    "label": "All access revoked"
   },
   {
+   "description": "Rights given to people you switch on as Telegram admin (People \u2192 person \u2192 Telegram admin). The bot must itself be an administrator with the \u201cAdd new admins\u201d right in those chats. Rights that don't apply to a chat type are skipped. People are never allowed to add other admins.",
+   "fieldname": "admin_rights_section",
+   "fieldtype": "Section Break",
+   "label": "Telegram Admin Rights"
+  },
+  {
+   "default": "1",
+   "fieldname": "admin_can_delete_messages",
+   "fieldtype": "Check",
+   "label": "Delete messages"
+  },
+  {
+   "default": "1",
+   "fieldname": "admin_can_invite_users",
+   "fieldtype": "Check",
+   "label": "Invite users via link"
+  },
+  {
+   "default": "1",
+   "fieldname": "admin_can_pin_messages",
+   "fieldtype": "Check",
+   "label": "Pin messages (groups)"
+  },
+  {
+   "default": "0",
+   "fieldname": "admin_can_restrict_members",
+   "fieldtype": "Check",
+   "label": "Ban / restrict users"
+  },
+  {
+   "default": "0",
+   "fieldname": "admin_can_change_info",
+   "fieldtype": "Check",
+   "label": "Change chat info"
+  },
+  {
+   "fieldname": "column_break_admin",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "admin_can_manage_video_chats",
+   "fieldtype": "Check",
+   "label": "Manage video chats"
+  },
+  {
+   "default": "0",
+   "fieldname": "admin_can_manage_topics",
+   "fieldtype": "Check",
+   "label": "Manage topics (forum groups)"
+  },
+  {
+   "default": "1",
+   "fieldname": "admin_can_post_messages",
+   "fieldtype": "Check",
+   "label": "Post messages (channels)"
+  },
+  {
+   "default": "1",
+   "fieldname": "admin_can_edit_messages",
+   "fieldtype": "Check",
+   "label": "Edit others' messages (channels)"
+  },
+  {
    "fieldname": "notification_section",
    "fieldtype": "Section Break",
    "label": "Employee Notifications"
@@ -482,7 +557,7 @@
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-11-04 10:00:00.000000",
+ "modified": "2026-11-05 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Telegram Access Manager",
  "name": "Telegram Access Settings",
