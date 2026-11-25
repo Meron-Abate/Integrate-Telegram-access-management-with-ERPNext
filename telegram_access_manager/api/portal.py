@@ -29,7 +29,7 @@ from telegram_access_manager.constants import (
 	VERIFIER_ROLES,
 )
 from telegram_access_manager.credentials import get_config_status
-from telegram_access_manager.services import permissions, unlisted
+from telegram_access_manager.services import engagement, permissions, unlisted
 from telegram_access_manager.services.common import has_any_role, require_roles
 
 MEMBERSHIP_LABELS = {
@@ -753,3 +753,20 @@ def connect_webhook():
 	if not get_config_status()["secret_valid"]:
 		frappe.get_single(SETTINGS).generate_webhook_secret()
 	return set_webhook()
+
+
+# --------------------------------------------------------------------------------------- engagement
+@frappe.whitelist()
+def get_engagement(week_start=None):
+	"""Weekly participation per department group (counts only; no message content exists)."""
+	_portal_user()
+	return engagement.get_dashboard(frappe.utils.getdate(week_start) if week_start else None)
+
+
+@frappe.whitelist()
+def preview_engagement(campaign, chat=None):
+	"""The text each department would receive right now. Nothing is sent or saved."""
+	_manager()
+	if campaign not in engagement.CAMPAIGNS:
+		frappe.throw(_("Unknown campaign"))
+	return engagement.preview(campaign, chat)

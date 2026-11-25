@@ -1,6 +1,6 @@
 import frappe
 
-from telegram_access_manager.constants import ROLE_MANAGER, ROLE_VERIFIER
+from telegram_access_manager.constants import DT_ACTIVITY, ROLE_MANAGER, ROLE_VERIFIER
 
 ROLES = {
 	ROLE_MANAGER: "Configures the Telegram integration, chats and access roles; approves, rejects and revokes access.",
@@ -20,3 +20,10 @@ def before_install():
 
 def after_migrate():
 	ensure_roles()
+	ensure_indexes()
+
+
+def ensure_indexes():
+	"""Weekly statistics filter by chat and date: a composite index keeps them fast on a large message table."""
+	if frappe.db.table_exists(DT_ACTIVITY):
+		frappe.db.add_index(DT_ACTIVITY, ["telegram_chat_id", "activity_date"], "tam_chat_date_index")

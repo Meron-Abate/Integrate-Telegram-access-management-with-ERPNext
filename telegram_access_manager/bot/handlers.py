@@ -21,10 +21,10 @@ from telegram_access_manager.constants import (
 	REMOVED,
 )
 from telegram_access_manager.services import access as access_service
-from telegram_access_manager.services import invites, unlisted
-from telegram_access_manager.services.messages import Raw, render
-from telegram_access_manager.services.audit import log_event
+from telegram_access_manager.services import engagement, invites, unlisted
+from telegram_access_manager.services.audit import log_error, log_event
 from telegram_access_manager.services.common import clean_text, get_settings
+from telegram_access_manager.services.messages import Raw, render
 from telegram_access_manager.services.requests import submit_request_from_telegram
 from telegram_access_manager.services.sync import enqueue_sync, map_member_status
 from telegram_access_manager.telegram.client import TelegramAPIError
@@ -206,9 +206,20 @@ def resend_links(chat_id, user) -> bool:
 
 
 # --------------------------------------------------------------------------------- managed chats
+def _count_engagement(message: dict):
+	"""Weekly engagement statistics. Best effort: counting must never break registration or access handling."""
+	try:
+		engagement.record_message(message)
+	except Exception:
+		if frappe.flags.in_test:
+			raise
+		log_error("Telegram engagement counting failed", frappe.get_traceback())
+
+
 def handle_group_message(message: dict) -> bool:
 	if message.get("migrate_to_chat_id"):
 		return handle_group_service_message(message)
+	_count_engagement(message)
 	text = message.get("text") or ""
 	if not text.startswith("/"):
 		return False

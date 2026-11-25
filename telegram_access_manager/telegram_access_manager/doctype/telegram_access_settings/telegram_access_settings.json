@@ -81,7 +81,12 @@
   "column_break_lim",
   "max_requests_per_user_per_day",
   "max_messages_per_minute",
-  "bot_update_retention_days"
+  "bot_update_retention_days",
+  "engagement_section",
+  "engagement_enabled",
+  "engagement_participation_target",
+  "column_break_eng",
+  "engagement_excluded_roles"
  ],
  "fields": [
   {
@@ -561,6 +566,37 @@
    "fieldtype": "Int",
    "label": "Keep Bot Update Records (Days)",
    "non_negative": 1
+  },
+  {
+   "fieldname": "engagement_section",
+   "fieldtype": "Section Break",
+   "label": "Community Engagement"
+  },
+  {
+   "fieldname": "engagement_enabled",
+   "fieldtype": "Check",
+   "label": "Enable Weekly Community Engagement",
+   "default": "0",
+   "description": "Counts messages in department groups and posts the Monday, Wednesday and Friday messages. Off by default."
+  },
+  {
+   "fieldname": "engagement_participation_target",
+   "fieldtype": "Int",
+   "label": "Strong Participation (%)",
+   "default": "50",
+   "non_negative": 1,
+   "description": "A department at or above this share of active members gets appreciation instead of a nudge."
+  },
+  {
+   "fieldname": "column_break_eng",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "engagement_excluded_roles",
+   "fieldtype": "Small Text",
+   "label": "Excluded Access Roles",
+   "default": "HR\nManagers\nAdmin",
+   "description": "One Telegram Access Role per line. Their members keep their access but are left out of targets and awards."
   }
  ],
  "issingle": 1,

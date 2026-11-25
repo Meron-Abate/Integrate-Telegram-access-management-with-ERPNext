@@ -22,20 +22,26 @@ website_route_rules = [{"from_route": "/telegram-access/<path:app_path>", "to_ro
 before_install = "telegram_access_manager.install.before_install"
 after_migrate = "telegram_access_manager.install.after_migrate"
 
+_nr = "telegram_access_manager.services.notification_rules.handle_doc_event"
 doc_events = {
 	"Employee": {
 		"on_update": "telegram_access_manager.services.employee.on_employee_update",
-	}
+	},
+	# Routes ERPNext events to Telegram groups (see Telegram Notification Rule).
+	"*": {"after_insert": _nr, "on_update": _nr, "on_submit": _nr, "on_cancel": _nr},
 }
 
 scheduler_events = {
 	"cron": {
 		"*/5 * * * *": ["telegram_access_manager.tasks.retry_failed"],
+		# Africa/Addis_Ababa is applied in code, so the schedule does not depend on the server time zone.
+		"*/15 * * * *": ["telegram_access_manager.tasks.post_engagement_messages"],
 	},
 	"hourly": ["telegram_access_manager.tasks.expire_invite_links"],
 	"daily": [
 		"telegram_access_manager.tasks.review_inactive_employees",
 		"telegram_access_manager.tasks.purge_bot_updates",
+		"telegram_access_manager.tasks.purge_message_activity",
 	],
 }
 

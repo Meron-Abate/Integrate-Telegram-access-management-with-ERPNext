@@ -4,7 +4,7 @@ import frappe
 from frappe.utils import add_to_date, cint, now_datetime
 
 from telegram_access_manager.constants import DT_ACCESS, DT_UPDATE
-from telegram_access_manager.services import invites
+from telegram_access_manager.services import engagement, invites
 from telegram_access_manager.services.employee import flag_access_for_inactive_employee
 from telegram_access_manager.services.sync import retry_failed_syncs
 
@@ -31,6 +31,16 @@ def review_inactive_employees():
 		status = frappe.db.get_value("Employee", row.employee, "status")
 		if status != "Active":
 			flag_access_for_inactive_employee(row.employee, status)
+
+
+def post_engagement_messages():
+	"""Every 15 minutes: posts the Monday / Wednesday / Friday message when its Addis Ababa window is open."""
+	if _enabled():
+		engagement.run_scheduled()
+
+
+def purge_message_activity():
+	engagement.purge_old_activity()
 
 
 def purge_bot_updates():

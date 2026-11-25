@@ -292,6 +292,51 @@ Never run the poller and a webhook for the same bot at the same time. Use a sepa
 6. Make sure the scheduler is enabled (`bench --site <site> scheduler status`) for retries, link
    expiry and the daily employee review.
 
+## Community engagement (weekly recognition)
+
+A lightweight, friendly nudge to use the department Telegram groups. **Off by default**: switch on
+*Enable Weekly Community Engagement* in Telegram Access Settings (section "Community Engagement").
+Nothing about access management, registration or invitations changes.
+
+**Which groups count.** No separate mapping: a *department group* is an active, registered group or
+supergroup assigned to exactly one `<Name> Team` access role. The `<Name> Head` role(s) assigned to the
+same chat are that department's Heads. Chats shared by several teams, channels, and chats without a
+team role are left out. Members are the active people with an effective *Allow* on the chat whose access
+role is the team or head role; roles listed in *Excluded Access Roles* (HR, Managers, Admin by default)
+keep their Telegram access but are never counted or awarded.
+
+**What is recorded.** The existing webhook stores, per message from a matched employee in a department
+group: Telegram user ID, chat ID, message ID, topic ID (forum groups), time and message type
+(`Telegram Message Activity`). Never the text. Bots, anonymous/channel senders and service messages are
+ignored; `chat_id:message_id` is the document name, so a message is counted once. Unmatched Telegram
+accounts are not recorded. Records older than 180 days are purged daily.
+
+**What is posted** (Africa/Addis_Ababa time, into the department group only, never as a DM):
+
+| When | What |
+| --- | --- |
+| Monday 09:00 | Happy Monday message |
+| Wednesday 10:00 | Participation so far this week: appreciation if at least *Strong Participation (%)* of members were active, otherwise a playful nudge that mentions the Head by `@username` (or a `tg://user?id=` mention) |
+| Friday 16:00 | Weekly awards for Monday to Friday: top 3 by messages, top 3 by active days (2+ days), team appreciation, and the most active department (coverage, then consistency, then volume) |
+
+Only people who took part are ever named. A scheduler job runs every 15 minutes, decides from the
+Addis Ababa clock which campaign is due (a missed one is retried until 3 hours after its start), and
+records every post in `Telegram Engagement Log` (one row per campaign, week and chat), so repeated runs
+never send twice. Telegram failures are logged on that row and in the Error Log and retried up to 3 times.
+
+**Dashboard:** *Community* in the portal (`/telegram-access/engagement`).
+
+**Testing without waiting for the day** (development site):
+
+```bash
+# what each group would receive right now; nothing is sent or saved
+bench --site dev.erp.eternal-media.com execute telegram_access_manager.api.portal.preview_engagement --kwargs '{"campaign": "Wednesday"}'
+# really post one campaign to ONE group (use a test group); force=True re-sends even if already sent
+bench --site dev.erp.eternal-media.com execute telegram_access_manager.services.engagement.run_campaign --kwargs '{"campaign": "Friday", "chat": "<Telegram Chat name>", "force": true}'
+# the scheduler job itself (only posts inside a campaign's window, so it does nothing on other days)
+bench --site dev.erp.eternal-media.com execute telegram_access_manager.tasks.post_engagement_messages
+```
+
 ## Troubleshooting
 
 | Symptom | Check |

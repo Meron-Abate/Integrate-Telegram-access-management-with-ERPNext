@@ -7,6 +7,7 @@ const routes = [
 	{ path: "/people", name: "People", component: () => import("./pages/People.vue") },
 	{ path: "/people/:name", name: "Person", component: () => import("./pages/PersonDetail.vue"), props: true },
 	{ path: "/chats", name: "Chats", component: () => import("./pages/Chats.vue") },
+	{ path: "/engagement", name: "Engagement", component: () => import("./pages/Engagement.vue") },
 	{ path: "/roles", name: "Roles", component: () => import("./pages/Roles.vue") },
 	{ path: "/settings", name: "Settings", component: () => import("./pages/Settings.vue") },
 	{ path: "/:pathMatch(.*)*", redirect: "/" },

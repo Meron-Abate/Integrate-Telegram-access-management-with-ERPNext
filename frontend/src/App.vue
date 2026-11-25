@@ -87,6 +87,7 @@ const navItems = computed(() => {
 		{ label: "People", to: "/people", icon: "users", count: boot.counts.review + boot.counts.problems },
 		{ label: "Groups & Channels", to: "/chats", icon: "message-circle", count: boot.counts.chats_to_review },
 		{ label: "Access Roles", to: "/roles", icon: "layers" },
+		{ label: "Community", to: "/engagement", icon: "award" },
 	];
 	if (boot.is_manager) items.push({ label: "Settings", to: "/settings", icon: "settings" });
 	return items;

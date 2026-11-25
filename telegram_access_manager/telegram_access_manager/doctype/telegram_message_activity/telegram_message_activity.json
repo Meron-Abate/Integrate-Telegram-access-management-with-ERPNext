@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "creation": "2026-11-11 09:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "in_create": 1,
+ "links": [],
+ "modified": "2026-11-11 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Telegram Access Manager",
+ "owner": "Administrator",
+ "states": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "naming_rule": "By fieldname",
+ "name": "Telegram Message Activity",
+ "autoname": "field:activity_key",
+ "field_order": [
+  "activity_key",
+  "telegram_chat_id",
+  "telegram_user_id",
+  "message_id",
+  "column_break_1",
+  "message_thread_id",
+  "message_type",
+  "message_on",
+  "activity_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "activity_key",
+   "fieldtype": "Data",
+   "label": "Activity Key",
+   "reqd": 1,
+   "unique": 1,
+   "read_only": 1,
+   "description": "<chat id>:<message id>. Unique, so a message is never counted twice."
+  },
+  {
+   "fieldname": "telegram_chat_id",
+   "fieldtype": "Data",
+   "label": "Telegram Chat ID",
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "telegram_user_id",
+   "fieldtype": "Data",
+   "label": "Telegram User ID",
+   "reqd": 1,
+   "search_index": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "message_id",
+   "fieldtype": "Int",
+   "label": "Message ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "message_thread_id",
+   "fieldtype": "Int",
+   "label": "Topic (Thread) ID"
+  },
+  {
+   "fieldname": "message_type",
+   "fieldtype": "Data",
+   "label": "Message Type",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "message_on",
+   "fieldtype": "Datetime",
+   "label": "Sent On (Addis Ababa time)",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "activity_date",
+   "fieldtype": "Date",
+   "label": "Activity Date (Addis Ababa)",
+   "reqd": 1,
+   "search_index": 1,
+   "in_standard_filter": 1
+  }
+ ],
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "delete": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Telegram Access Manager"
+  }
+ ]
+}
